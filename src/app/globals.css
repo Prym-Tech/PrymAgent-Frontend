@@ -1,0 +1,105 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  /* Brand Extensions */
+  --color-brand-yellow: var(--brand-yellow);
+  --color-brand-green: var(--brand-green);
+
+  /* Mapping Shadcn UI Variables */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+}
+
+:root {
+  /* Hex: #1A1A1A (The Main Text Black) */
+  --foreground: oklch(0.205 0 0);
+  --background: oklch(1 0 0);
+
+  /* Brand Colors */
+  /* Primary Green: #2E7246 */
+  --primary: oklch(0.44 0.08 155.6);
+  --primary-foreground: oklch(0.98 0.01 155.6);
+  /* Near white for contrast */
+
+  /* Secondary/Accent Yellow: #FABB14 */
+  --brand-yellow: oklch(0.81 0.19 83.5);
+  --secondary: oklch(0.81 0.19 83.5);
+  --secondary-foreground: oklch(0.205 0 0);
+  /* Text black on yellow */
+
+  --brand-green: oklch(0.44 0.08 155.6);
+
+  /* UI Neutrals */
+  --muted: oklch(0.96 0.01 155.6);
+  --muted-foreground: oklch(0.45 0.02 155.6);
+  --accent: oklch(0.92 0.03 155.6);
+  --accent-foreground: oklch(0.44 0.08 155.6);
+
+  --border: oklch(0.92 0 0);
+  --input: oklch(0.92 0 0);
+  --ring: oklch(0.44 0.08 155.6);
+
+  --radius: 0.625rem;
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+
+  /* In dark mode, we can slightly brighten the green for better vibrance */
+  --primary: oklch(0.55 0.09 155.6);
+  --primary-foreground: oklch(0.145 0 0);
+
+  --secondary: oklch(0.81 0.19 83.5);
+  --secondary-foreground: oklch(0.145 0 0);
+
+  --muted: oklch(0.25 0.02 155.6);
+  --muted-foreground: oklch(0.7 0.02 155.6);
+
+  --accent: oklch(0.25 0.02 155.6);
+  --accent-foreground: oklch(0.985 0 0);
+
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+}
+
+@layer base {
+
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentColor);
+  }
+
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+}
