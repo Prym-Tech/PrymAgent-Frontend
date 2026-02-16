@@ -72,7 +72,7 @@ export default function Home() {
 
         {/* Main Headline */}
         <h1 className="mb-6 max-w-5xl text-5xl font-bold tracking-tight text-foreground sm:text-6xl md:text-7xl lg:text-8xl animate-in fade-in zoom-in-95 duration-700 delay-100">
-          Your Pocket CFO
+          Your Finance Gee
           <br />
           <span className="relative inline-block mt-2">
             <span className="relative z-10 text-transparent bg-clip-text bg-gradient-to-r from-primary via-primary to-brand-yellow">
@@ -219,7 +219,7 @@ export default function Home() {
       <div className="pointer-events-none absolute inset-0 z-0 block lg:hidden overflow-hidden">
         
         {/* Mobile Card 1: Mini Revenue Card - Top Right */}
-        <div className="absolute top-[10%] right-[5%] animate-[float_5s_ease-in-out_infinite]">
+        {/* <div className="absolute top-[10%] right-[5%] animate-[float_5s_ease-in-out_infinite]">
           <div className="w-40 sm:w-48 rounded-xl border border-border bg-background/90 backdrop-blur-xl p-3 sm:p-4 shadow-xl">
             <div className="mb-2 flex items-center justify-between">
               <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">Revenue</span>
@@ -231,10 +231,10 @@ export default function Home() {
               <span className="font-medium">+23% today</span>
             </div>
           </div>
-        </div>
+        </div> */}
 
         {/* Mobile Card 2: Invoice Notification - Left Side */}
-        <div className="absolute bottom-[30%] sm:bottom-[30%] left-[5%] animate-[float_6s_ease-in-out_infinite_2s]">
+        {/* <div className="absolute bottom-[30%] sm:bottom-[30%] left-[5%] animate-[float_6s_ease-in-out_infinite_2s]">
           <div className="flex items-center gap-3 rounded-xl border border-border bg-background/90 backdrop-blur-xl px-4 py-3 shadow-xl max-w-[200px] sm:max-w-none">
             <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground">
               <Receipt className="h-4 w-4" />
@@ -247,7 +247,7 @@ export default function Home() {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
 
         {/* Mobile Card 3: AI Insight Badge - Bottom Right */}
         {/* <div className="absolute bottom-[35%] sm:bottom-[30%] right-[5%] animate-[float_7s_ease-in-out_infinite_4s]">
