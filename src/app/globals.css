@@ -100,6 +100,51 @@
   }
 
   body {
-    @apply bg-background text-foreground font-sans antialiased;
+    @apply bg-background text-foreground antialiased;
   }
+}
+
+/* CUSTOM FONTS START */
+
+@font-face {
+  font-family: 'Charlie Display';
+  src: url('/assets/fonts/charlie-display-3.ttf');
+  font-weight: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Charlie Display';
+  src: url('/assets/fonts/charlie-display-light.ttf');
+  font-weight: 300;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Charlie Display';
+  src: url('/assets/fonts/charlie-display-semibold.ttf');
+  font-weight: 600;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Charlie Display';
+  src: url('/assets/fonts/charlie-display-bold.ttf');
+  font-weight: 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Charlie Display';
+  src: url('/assets/fonts/charlie-display-ultra.ttf');
+  font-weight: 900;
+  font-display: swap;
+}
+
+html {
+  font-family: "Charlie Display", sans-serif !important;
+  font-optical-sizing: auto;
+  font-style: normal;
+  scroll-behavior: smooth;
+  overflow-x: hidden;
 }
