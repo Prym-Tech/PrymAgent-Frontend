@@ -5,8 +5,8 @@ import { ArrowRight, MessageCircle, Sparkles, TrendingUp, Receipt, CircleDollarS
 
 export default function Home() {
   const WHATSAPP_NUMBER = "2349032879124" 
-  const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}?text=Hi%20PrymAgent,%20I%20want%20to%20start.`
-
+  const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}?text=Hi!%20I%27d%20like%20to%20get%20started%20with%20MyBizAgent`
+  
   return (
     <main className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-background px-4 text-foreground">
       
@@ -86,8 +86,8 @@ export default function Home() {
         {/* Subheadline */}
         <p className="mb-12 max-w-2xl text-lg text-muted-foreground md:text-xl lg:text-2xl animate-in fade-in slide-in-from-bottom-3 duration-700 delay-200 leading-relaxed">
           Stop drowning in receipts and spreadsheets. 
-          <span className="text-foreground font-medium"> MyBizAgent</span> tracks sales, 
-          sends invoices, and checks loan eligibility—
+          <span className="text-foreground font-medium"> PrymAgent</span> tracks sales, 
+          sends invoices, and ask about the new tax rules for your business—
           <span className="text-foreground font-medium"> instantly</span>.
         </p>
 
@@ -100,7 +100,7 @@ export default function Home() {
             className="group relative inline-flex items-center gap-3 rounded-full bg-primary px-8 py-4 text-base font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:shadow-xl hover:shadow-primary/30 hover:scale-[1.02] active:scale-[0.98]"
           >
             <MessageCircle className="h-5 w-5 transition-transform group-hover:rotate-12" />
-            <span>Start on WhatsApp</span>
+            <span>Talk to your agent</span>
             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             
             {/* Pulse indicator */}
