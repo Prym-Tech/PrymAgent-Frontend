@@ -6,7 +6,7 @@ import { ArrowRight, MessageCircle, Sparkles, TrendingUp, Receipt, CircleDollarS
 export default function Home() {
   const WHATSAPP_NUMBER = "2349032879124" 
   const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}?text=Hi!%20I%27d%20like%20to%20get%20started%20with%20MyBizAgent`
-  
+
   return (
     <main className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-background px-4 text-foreground">
       
@@ -87,7 +87,7 @@ export default function Home() {
         <p className="mb-12 max-w-2xl text-lg text-muted-foreground md:text-xl lg:text-2xl animate-in fade-in slide-in-from-bottom-3 duration-700 delay-200 leading-relaxed">
           Stop drowning in receipts and spreadsheets. 
           <span className="text-foreground font-medium"> PrymAgent</span> tracks sales, 
-          sends invoices, and ask about the new tax rules for your business—
+          generates invoices, and answers questions about the new tax rules for your business—
           <span className="text-foreground font-medium"> instantly</span>.
         </p>
 
