@@ -118,7 +118,7 @@ export default function Home() {
             </span>
             <span className="flex items-center gap-1.5">
               <div className="h-1 w-1 rounded-full bg-primary" />
-              Works on 2G
+              Responds Instantly
             </span>
             <span className="flex items-center gap-1.5">
               <div className="h-1 w-1 rounded-full bg-brand-yellow" />
