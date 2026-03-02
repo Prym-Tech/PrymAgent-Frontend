@@ -204,41 +204,48 @@ export default function PaymentPage() {
       <div className="max-w-3xl mx-auto">
         
         {/* Header Card */}
-        <div className="bg-card border border-border rounded-2xl p-8 mb-6 shadow-lg">
-          <div className="flex items-start justify-between mb-6">
-            <div className="flex items-center gap-4">
+        <div className="bg-card border border-border rounded-2xl p-6 md:p-8 mb-6 shadow-lg">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 mb-6">
+            {/* Left: Logo + Brand */}
+            <div className="flex items-center gap-4 min-w-0 flex-1">
               {invoice.merchant.logo_url ? (
-                <div className="relative w-16 h-16 rounded-xl overflow-hidden bg-muted flex-shrink-0">
+                <div className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-xl overflow-hidden bg-muted flex-shrink-0">
                   <Image
                     src={invoice.merchant.logo_url}
                     alt={invoice.merchant.brand_name}
                     fill
                     className="object-contain p-2"
+                    unoptimized={true}
                   />
                 </div>
               ) : (
                 <div 
-                  className="w-16 h-16 rounded-xl flex items-center justify-center text-white font-bold text-2xl flex-shrink-0"
+                  className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl flex items-center justify-center text-white font-bold text-xl sm:text-2xl flex-shrink-0"
                   style={{ backgroundColor: brandColor }}
                 >
                   {invoice.merchant.brand_name.charAt(0).toUpperCase()}
                 </div>
               )}
               
-              <div>
-                <h1 className="text-2xl font-bold text-foreground" style={{ color: brandColor }}>
+              <div className="min-w-0 flex-1">
+                <h1 
+                  className="text-xl sm:text-2xl font-bold text-foreground truncate sm:whitespace-normal sm:line-clamp-2" 
+                  style={{ color: brandColor }}
+                  title={invoice.merchant.brand_name}
+                >
                   {invoice.merchant.brand_name}
                 </h1>
                 {invoice.merchant.phone && (
-                  <p className="text-sm text-muted-foreground mt-1">
+                  <p className="text-xs sm:text-sm text-muted-foreground mt-1 truncate">
                     📱 {invoice.merchant.phone}
                   </p>
                 )}
               </div>
             </div>
 
-            <div className="text-right">
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-muted text-xs font-medium text-foreground mb-2">
+            {/* Right: Invoice Badge */}
+            <div className="flex flex-col items-start sm:items-end gap-2 w-full sm:w-auto">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-muted text-xs font-medium text-foreground">
                 <span className="w-2 h-2 rounded-full bg-brand-yellow animate-pulse" />
                 INVOICE
               </div>
@@ -250,18 +257,18 @@ export default function PaymentPage() {
 
           {/* Bill To */}
           <div className="border-t border-border pt-6">
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid sm:grid-cols-2 gap-6">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
                   Bill To
                 </p>
-                <p className="text-foreground font-semibold">{invoice.client_name}</p>
+                <p className="text-foreground font-semibold break-words">{invoice.client_name}</p>
                 {invoice.client_address && (
-                  <p className="text-sm text-muted-foreground mt-1">{invoice.client_address}</p>
+                  <p className="text-sm text-muted-foreground mt-1 break-words">{invoice.client_address}</p>
                 )}
               </div>
 
-              <div className="text-left md:text-right">
+              <div className="text-left sm:text-right">
                 <div className="mb-3">
                   <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">
                     Issue Date
@@ -274,8 +281,8 @@ export default function PaymentPage() {
                     <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">
                       Due Date
                     </p>
-                    <div className="flex items-center gap-2 justify-start md:justify-end">
-                      {isDueSoon && <Clock className="h-3 w-3 text-amber-500" />}
+                    <div className="flex items-center gap-2 justify-start sm:justify-end">
+                      {isDueSoon && <Clock className="h-3 w-3 text-amber-500 flex-shrink-0" />}
                       <p className={`text-sm font-medium ${isDueSoon ? 'text-amber-500' : 'text-foreground'}`}>
                         {formatDate(invoice.due_date)}
                       </p>
