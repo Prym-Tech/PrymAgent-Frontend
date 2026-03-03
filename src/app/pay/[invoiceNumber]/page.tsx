@@ -112,19 +112,21 @@ export default function PaymentPage() {
         currency: 'NGN',
         label: invoice.merchant.brand_name,
         metadata: {
+          type: 'INVOICE',  // Critical for webhook routing
           invoice_number: invoice.invoice_number,
           merchant_brand: invoice.merchant.brand_name,
+          client_name: invoice.client_name,
           custom_fields: [
             {
-              display_name: 'Invoice Number',
+              display_name: 'Invoice',
               variable_name: 'invoice_number',
               value: invoice.invoice_number,
             },
             {
-              display_name: 'Client',
-              variable_name: 'client_name',
-              value: invoice.client_name,
-            }
+              display_name: 'Merchant',
+              variable_name: 'merchant',
+              value: invoice.merchant.brand_name,
+            },
           ]
         },
         onClose: function() {
