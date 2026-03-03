@@ -110,6 +110,7 @@ export default function PaymentPage() {
         amount: Math.round(invoice.total * 100), // Convert to kobo
         ref: invoice.payment_reference,
         currency: 'NGN',
+        label: invoice.merchant.brand_name,
         metadata: {
           invoice_number: invoice.invoice_number,
           merchant_brand: invoice.merchant.brand_name,
