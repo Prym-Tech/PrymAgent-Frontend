@@ -12,24 +12,32 @@ export default function Home() {
       
       {/* ----------------- SOPHISTICATED BACKGROUND SYSTEM ----------------- */}
       <div className="fixed inset-0 z-0">
-        {/* Layered gradient foundation */}
-        <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-muted/20" />
+        {/* Base gradient */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,rgba(46,114,70,0.03),transparent_40%),radial-gradient(ellipse_at_bottom_right,rgba(250,187,20,0.025),transparent_40%)]" />
         
-        {/* Organic shape accents */}
-        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-primary/[0.03] rounded-full blur-[150px] translate-x-1/3 -translate-y-1/3" />
-        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-brand-yellow/[0.04] rounded-full blur-[120px] -translate-x-1/4 translate-y-1/4" />
-        
-        {/* Fine grid overlay - very subtle */}
+        {/* Diagonal stripe pattern - very subtle */}
         <div 
-          className="absolute inset-0 opacity-[0.02]"
+          className="absolute inset-0 opacity-[0.015]"
           style={{
-            backgroundImage: `
-              linear-gradient(to right, currentColor 1px, transparent 1px),
-              linear-gradient(to bottom, currentColor 1px, transparent 1px)
-            `,
-            backgroundSize: '80px 80px'
+            backgroundImage: `repeating-linear-gradient(
+              45deg,
+              transparent,
+              transparent 80px,
+              currentColor 80px,
+              currentColor 81px
+            )`
           }}
         />
+        
+        {/* Organic shape accent - top right */}
+        <div className="absolute top-0 right-0 w-[700px] h-[700px]">
+          <div className="absolute inset-0 bg-primary/[0.02] rounded-[40%_60%_70%_30%/30%_50%_50%_70%] blur-[100px]" />
+        </div>
+        
+        {/* Organic shape accent - bottom left */}
+        <div className="absolute bottom-0 left-0 w-[500px] h-[500px]">
+          <div className="absolute inset-0 bg-brand-yellow/[0.025] rounded-[60%_40%_30%_70%/60%_30%_70%_40%] blur-[90px]" />
+        </div>
       </div>
 
       {/* ----------------- NAVIGATION ----------------- */}
@@ -49,16 +57,13 @@ export default function Home() {
               </span>
             </div>
             
-            <button 
-              disabled 
-              className="group relative flex items-center gap-2 rounded-lg border border-border/60 bg-background px-2.5 py-1 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted/50 cursor-not-allowed"
-            >
-              <div className="h-1.5 w-1.5 rounded-full bg-muted-foreground/30" />
-              <span>Dashboard Coming Soon</span>
-              <span className="absolute -bottom-9 right-0 w-max opacity-0 transition-opacity group-hover:opacity-100 text-[10px] text-muted-foreground/70">
-                Coming soon
+            <div className="relative flex items-center gap-2 rounded-lg border border-border/60 bg-muted/30 px-3.5 py-1.5">
+              <div className="h-1.5 w-1.5 rounded-full bg-muted-foreground/40" />
+              <span className="text-xs font-medium text-muted-foreground">Dashboard</span>
+              <span className="text-[10px] font-semibold text-brand-yellow bg-brand-yellow/10 px-2 py-0.5 rounded">
+                Coming Soon
               </span>
-            </button>
+            </div>
           </div>
         </div>
       </nav>
@@ -74,7 +79,7 @@ export default function Home() {
               {/* Badge */}
               <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/[0.03] px-3.5 py-1.5 text-xs font-medium text-primary">
                 <Smartphone className="h-3.5 w-3.5" />
-                <span>WhatsApp-Native Finance Agent</span>
+                <span>AI-Powered WhatsApp Finance Agent</span>
               </div>
 
               {/* Headline */}
@@ -93,9 +98,9 @@ export default function Home() {
               {/* Subheadline */}
               <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed max-w-xl">
                 Stop drowning in receipts and spreadsheets. 
-                <span className="text-foreground font-semibold"> PrymAgent</span> handles invoicing, 
+                <span className="text-foreground font-semibold"> PrymAgent's AI</span> handles invoicing, 
                 transaction tracking, and financial reports—
-                <span className="text-foreground font-semibold"> all through chat</span>.
+                <span className="text-foreground font-semibold"> all through natural chat</span>.
               </p>
 
               {/* Feature Pills */}
