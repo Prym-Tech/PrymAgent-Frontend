@@ -43,25 +43,25 @@ export default function Home() {
       {/* ----------------- NAVIGATION ----------------- */}
       <nav className="relative z-50 border-b border-border/50 bg-background/80 backdrop-blur-md">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          <div className="flex h-16 items-center justify-between">
+          <div className="flex h-16 items-center justify-between gap-4">
             <div className="flex items-center gap-2.5">
               <Image 
                 src="/assets/icons/logohead.png" 
                 alt="Prym Logo" 
                 width={32} 
                 height={32}
-                className="h-8 w-8"
+                className="h-8 w-8 flex-shrink-0"
               />
-              <span className="text-xl font-bold tracking-tight">
+              <span className="text-xl font-bold tracking-tight whitespace-nowrap">
                 PrymAgent<span className="text-primary">.</span>
               </span>
             </div>
             
-            <div className="relative flex items-center gap-2 rounded-lg border border-border/60 bg-muted/30 px-3.5 py-1.5">
-              <div className="h-1.5 w-1.5 rounded-full bg-muted-foreground/40" />
-              <span className="text-xs font-medium text-muted-foreground">Dashboard</span>
-              <span className="text-[10px] font-semibold text-brand-yellow bg-brand-yellow/10 px-2 py-0.5 rounded">
-                Coming Soon
+            <div className="relative flex items-center gap-1.5 sm:gap-2 rounded-lg border border-border/60 bg-muted/30 px-2 sm:px-3.5 py-1.5 flex-shrink-0">
+              <div className="h-1.5 w-1.5 rounded-full bg-muted-foreground/40 hidden sm:block" />
+              <span className="text-[10px] sm:text-xs font-medium text-muted-foreground whitespace-nowrap">Dashboard</span>
+              <span className="text-[9px] sm:text-[10px] font-semibold text-brand-yellow bg-brand-yellow/10 px-1.5 sm:px-2 py-0.5 rounded whitespace-nowrap">
+                Soon
               </span>
             </div>
           </div>
@@ -69,7 +69,7 @@ export default function Home() {
       </nav>
 
       {/* ----------------- HERO SECTION ----------------- */}
-      <section className="relative z-10 pt-20 pb-16 lg:pt-32 lg:pb-24">
+      <section className="relative z-10 pt-10 pb-16 lg:pt-12 lg:pb-24">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             
