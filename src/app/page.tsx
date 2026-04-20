@@ -20,38 +20,38 @@ const featureCards = [
     icon: Receipt,
     title: "Invoice and Receipt Generation",
     copy:
-      "Generate polished business documents straight from natural conversation, with branding, tax handling, payment references, and share-ready output.",
+      "Create branded invoices and receipts from simple chat, with tax handling, payment links, and clean share-ready output.",
   },
   {
     icon: WalletCards,
-    title: "Payment-Aware Cashflow Ops",
+    title: "Payment Links and Tracking",
     copy:
-      "Track payments, reconcile receipts, and keep a clean record of what was billed, what was paid, and what still needs attention.",
+      "Generate payment links on request, track invoice payments, and keep a clear view of what has been billed and paid.",
   },
   {
     icon: BarChart3,
     title: "Operational Finance Summaries",
     copy:
-      "Turn everyday business activity into usable reports and structured records instead of scattered chats, notes, and memory.",
+      "Turn daily business activity into reports and structured records instead of scattered chats and mental notes.",
   },
 ]
 
 const workflowSteps = [
   {
     title: "Message naturally on WhatsApp",
-    body: "No dashboard dependency. Just speak the way you already run the business: 'Create invoice for Tega', 'Log 250k transfer', 'Generate receipt for that payment'.",
+    body: "No dashboard dependency. Just say what you need: 'Create invoice for Tega', 'Log 250k transfer', 'Generate receipt for that payment'.",
   },
   {
     title: "AI extracts intent and structure",
-    body: "PrymAgent interprets the request, identifies the action, pulls out the business details, and keeps the interaction conversational without losing precision.",
+    body: "PrymAgent identifies the action, pulls out the details, and keeps the experience conversational without losing structure.",
   },
   {
     title: "Backend logic validates the work",
-    body: "The system checks requirements, preserves business state, applies rules for payments and records, and produces consistent outputs instead of hallucinated guesses.",
+    body: "The system validates the request, preserves business state, and produces consistent outputs instead of guesses.",
   },
   {
     title: "You get a usable business artifact",
-    body: "PDF invoices, receipts, transaction logs, and reports come out ready for real use, not just as text suggestions buried in a chat thread.",
+    body: "Invoices, receipts, transaction logs, and reports come out ready for real business use.",
   },
 ]
 
@@ -131,9 +131,9 @@ export default function Home() {
                 <div className="h-1 w-28 rounded-full bg-gradient-to-r from-primary to-brand-yellow" />
 
                 <p className="max-w-2xl text-lg leading-relaxed text-muted-foreground sm:text-xl">
-                  PrymAgent is more than a chatbot on WhatsApp. It is a structured AI operations layer for
-                  small businesses: interpreting intent, validating finance workflows, and turning plain
-                  language into invoices, receipts, transaction records, and actionable business outputs.
+                  PrymAgent is built for SMEs, professionals, and founders who already run work on
+                  WhatsApp. It turns plain language into invoices, receipts, records, reports, and
+                  payment-aware business actions.
                 </p>
               </div>
 
@@ -144,8 +144,7 @@ export default function Home() {
                     Guardrailed Execution
                   </div>
                   <p className="text-sm leading-relaxed text-muted-foreground">
-                    The AI interprets what the user wants, but deterministic backend rules decide what
-                    actually gets created and sent.
+                    The AI understands the request, but backend rules decide what actually gets created and sent.
                   </p>
                 </div>
 
@@ -155,8 +154,7 @@ export default function Home() {
                     Natural Language In, Structured Output Out
                   </div>
                   <p className="text-sm leading-relaxed text-muted-foreground">
-                    Requests arrive as conversation, but the system turns them into business-ready records
-                    and documents.
+                    Chat goes in. Structured business output comes out.
                   </p>
                 </div>
               </div>
@@ -233,11 +231,10 @@ export default function Home() {
               What It Actually Does
             </p>
             <h2 className="text-3xl font-black tracking-tight sm:text-4xl">
-              Built for serious day-to-day business operations, not just pretty AI demos
+              Built for real day-to-day operations, not just AI demos
             </h2>
             <p className="text-base leading-relaxed text-muted-foreground sm:text-lg">
-              PrymAgent is designed to sit in the flow of how founders and operators already work, while
-              introducing structure, memory, and reliable output behind the scenes.
+              PrymAgent fits into how business owners already work, while adding structure, memory, and reliable execution.
             </p>
           </div>
 
@@ -267,12 +264,10 @@ export default function Home() {
               Technical Strength
             </p>
             <h2 className="mt-3 text-3xl font-black tracking-tight sm:text-4xl">
-              The AI feels simple on the surface because the system underneath is not
+              Simple in chat, rigorous underneath
             </h2>
             <p className="mt-4 text-base leading-relaxed text-muted-foreground sm:text-lg">
-              PrymAgent is intentionally engineered to combine conversational ease with structured backend
-              behavior. That means the product can stay friendly in chat while remaining disciplined in how
-              it handles business actions.
+              PrymAgent combines conversational ease with structured backend behavior, so finance actions stay easy to request and reliable to execute.
             </p>
 
             <div className="mt-8 space-y-4">
@@ -325,11 +320,10 @@ export default function Home() {
                   Start Running It
                 </p>
                 <h2 className="mt-3 text-3xl font-black tracking-tight sm:text-4xl">
-                  Move finance operations from scattered chats into a system that actually executes
+                  Move finance work from scattered chats into a system that actually executes
                 </h2>
                 <p className="mt-4 text-base leading-relaxed text-primary-foreground/85 sm:text-lg">
-                  If your business already runs on WhatsApp, PrymAgent meets you where the work is already
-                  happening and adds intelligence, memory, and execution where it matters.
+                  If your business already runs on WhatsApp, PrymAgent adds intelligence, structure, and execution right where the work already happens.
                 </p>
               </div>
 
