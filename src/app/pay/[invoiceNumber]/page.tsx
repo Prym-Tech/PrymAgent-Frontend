@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Image from 'next/image'
-import { AlertCircle, Check, Clock, Loader2, Lock, ArrowLeft } from 'lucide-react'
+import { AlertCircle, Clock, Loader2, Lock, ArrowLeft } from 'lucide-react'
 
 interface InvoiceItem {
   description: string
@@ -34,14 +34,9 @@ interface InvoiceData {
   due_date: string | null
   payment_reference: string
   payment_method: string
+  paystack_authorization_url: string | null
   status: string
   created_at: string
-}
-
-declare global {
-  interface Window {
-    PaystackPop: any
-  }
 }
 
 export default function PaymentPage() {
@@ -53,23 +48,6 @@ export default function PaymentPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [processing, setProcessing] = useState(false)
-  const [paystackLoaded, setPaystackLoaded] = useState(false)
-
-  // Load Paystack inline script
-  useEffect(() => {
-    if (document.getElementById('paystack-inline-js')) {
-      setPaystackLoaded(true)
-      return
-    }
-
-    const script = document.createElement('script')
-    script.id = 'paystack-inline-js'
-    script.src = 'https://js.paystack.co/v1/inline.js'
-    script.async = true
-    script.onload = () => setPaystackLoaded(true)
-    script.onerror = () => console.error('Failed to load Paystack')
-    document.body.appendChild(script)
-  }, [])
 
   // Fetch invoice data
   useEffect(() => {
@@ -99,49 +77,18 @@ export default function PaymentPage() {
   }, [invoiceNumber])
 
   const handlePayment = () => {
-    if (!invoice || !paystackLoaded || processing) return
+    if (!invoice || processing) return
 
     setProcessing(true)
 
     try {
-      const handler = window.PaystackPop.setup({
-        key: process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY || 'pk_test_c63e1544aff4a7ce41765ab96e572a085a90901e', // Replace with your public key
-        email: invoice.merchant.email,
-        amount: Math.round(invoice.total * 100), // Convert to kobo
-        ref: invoice.payment_reference,
-        currency: 'NGN',
-        label: invoice.merchant.brand_name,
-        metadata: {
-          type: 'INVOICE',  // Critical for webhook routing
-          invoice_number: invoice.invoice_number,
-          merchant_brand: invoice.merchant.brand_name,
-          client_name: invoice.client_name,
-          custom_fields: [
-            {
-              display_name: 'Invoice',
-              variable_name: 'invoice_number',
-              value: invoice.invoice_number,
-            },
-            {
-              display_name: 'Merchant',
-              variable_name: 'merchant',
-              value: invoice.merchant.brand_name,
-            },
-          ]
-        },
-        onClose: function() {
-          setProcessing(false)
-        },
-        callback: function(response: any) {
-          // Payment successful
-          router.push(`/pay/${invoiceNumber}/success?ref=${response.reference}`)
-        }
-      })
-      
-      handler.openIframe()
+      if (!invoice.paystack_authorization_url) {
+        throw new Error('Secure payment link is unavailable for this invoice.')
+      }
+      window.location.href = invoice.paystack_authorization_url
     } catch (err) {
       console.error('Payment error:', err)
-      alert('Payment initialization failed. Please try again.')
+      alert(err instanceof Error ? err.message : 'Payment initialization failed. Please try again.')
       setProcessing(false)
     }
   }
@@ -379,18 +326,18 @@ export default function PaymentPage() {
 
           <button
             onClick={handlePayment}
-            disabled={processing || !paystackLoaded}
+            disabled={processing || !invoice.paystack_authorization_url}
             className="w-full py-4 rounded-xl font-semibold text-white transition-all hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg"
             style={{ backgroundColor: brandColor }}
           >
             {processing ? (
               <>
                 <Loader2 className="h-5 w-5 animate-spin" />
-                Processing...
+                Redirecting...
               </>
             ) : (
               <>
-                <Check className="h-5 w-5" />
+                <Lock className="h-5 w-5" />
                 Pay {formatCurrency(invoice.total)}
               </>
             )}
