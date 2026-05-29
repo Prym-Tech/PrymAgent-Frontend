@@ -11,11 +11,11 @@ import {
   ClipboardList,
   FileText,
   Landmark,
+  Menu,
   MessageCircle,
   Palette,
   Play,
   Receipt,
-  Smartphone,
   WalletCards,
   X,
 } from "lucide-react"
@@ -112,13 +112,14 @@ const pricingActions = [
 
 export default function Home() {
   const [isDemoOpen, setIsDemoOpen] = useState(false)
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   return (
     <main className="min-h-screen bg-[#f8f8f8] text-[#090c13]">
-      <section className="mx-auto max-w-[1500px] px-3 py-3 sm:px-5 sm:py-5">
-        <div className="relative overflow-hidden rounded-[34px] bg-[#1b0015] text-white sm:rounded-[46px]">
-          <header className="relative z-20 mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
-            <a href="#top" className="flex items-center gap-2 rounded-full bg-white px-3 py-2 text-[#090c13]">
+      <section id="top" className="relative min-h-screen overflow-hidden bg-[#1b0015] text-white">
+        <header className="absolute left-0 right-0 top-0 z-30 px-4 py-4 sm:px-6 lg:px-8">
+          <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 rounded-full border border-white/12 bg-white/94 px-3 py-2 text-[#090c13] shadow-2xl shadow-black/20 backdrop-blur-xl">
+            <a href="#top" className="flex items-center gap-2 rounded-full px-2 py-1">
               <Image
                 src="/assets/icons/logohead.png"
                 alt="PrymAgent logo"
@@ -130,35 +131,100 @@ export default function Home() {
               <span className="text-lg font-black">PrymAgent</span>
             </a>
 
-            <nav className="hidden items-center gap-2 rounded-full bg-white px-2 py-2 text-sm font-semibold text-[#090c13] shadow-sm lg:flex">
-              <a href="#features" className="rounded-full px-4 py-2 hover:bg-[#f0f3eb]">
+            <nav className="hidden items-center gap-1 rounded-full bg-[#f4f5f1] p-1 text-sm font-bold text-[#090c13] lg:flex">
+              <a href="#features" className="rounded-full px-5 py-2.5 transition hover:bg-white">
                 Features
               </a>
-              <a href="#how" className="rounded-full px-4 py-2 hover:bg-[#f0f3eb]">
+              <a href="#how" className="rounded-full px-5 py-2.5 transition hover:bg-white">
                 How it works
               </a>
-              <a href="#pricing" className="rounded-full px-4 py-2 hover:bg-[#f0f3eb]">
+              <a href="#pricing" className="rounded-full px-5 py-2.5 transition hover:bg-white">
                 Pricing
               </a>
             </nav>
 
-            <a
-              href={WHATSAPP_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hidden rounded-full bg-[#b9ff66] px-5 py-3 text-sm font-black text-[#090c13] transition hover:bg-white sm:inline-flex"
+            <div className="hidden items-center gap-2 lg:flex">
+              <button
+                type="button"
+                onClick={() => setIsDemoOpen(true)}
+                className="rounded-full px-5 py-3 text-sm font-black transition hover:bg-[#f4f5f1]"
+              >
+                Watch demo
+              </button>
+              <a
+                href={WHATSAPP_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-full bg-[#090c13] px-5 py-3 text-sm font-black text-white transition hover:bg-[#2b2f37]"
+              >
+                Start free
+              </a>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setIsMenuOpen((open) => !open)}
+              className="flex h-11 w-11 items-center justify-center rounded-full bg-[#090c13] text-white lg:hidden"
+              aria-label="Toggle navigation menu"
+              aria-expanded={isMenuOpen}
             >
-              Start free
-            </a>
-          </header>
+              {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </button>
+          </div>
 
-          <div id="top" className="relative z-10 mx-auto max-w-7xl px-5 pb-10 pt-12 sm:px-8 sm:pb-16 sm:pt-16 lg:pb-20">
-            <div className="mx-auto max-w-5xl text-center">
-              <div className="mx-auto mb-7 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm font-semibold text-white/85">
-                <Smartphone className="h-4 w-4 text-[#b9ff66]" />
-                Business finance, handled from WhatsApp
+          {isMenuOpen && (
+            <div className="mx-auto mt-3 max-w-7xl rounded-[28px] border border-white/12 bg-white p-3 text-[#090c13] shadow-2xl shadow-black/20 lg:hidden">
+              <nav className="grid gap-1 text-base font-black">
+                <a
+                  href="#features"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="rounded-[20px] bg-[#f8f8f8] px-5 py-4"
+                >
+                  Features
+                </a>
+                <a
+                  href="#how"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="rounded-[20px] bg-[#f8f8f8] px-5 py-4"
+                >
+                  How it works
+                </a>
+                <a
+                  href="#pricing"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="rounded-[20px] bg-[#f8f8f8] px-5 py-4"
+                >
+                  Pricing
+                </a>
+              </nav>
+              <div className="mt-2 grid gap-2 sm:grid-cols-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsMenuOpen(false)
+                    setIsDemoOpen(true)
+                  }}
+                  className="rounded-[20px] bg-[#f0f3eb] px-5 py-4 text-left font-black"
+                >
+                  Watch demo
+                </button>
+                <a
+                  href={WHATSAPP_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="rounded-[20px] bg-[#b9ff66] px-5 py-4 font-black"
+                >
+                  Start free
+                </a>
               </div>
+            </div>
+          )}
+        </header>
 
+        <div className="relative z-10 flex min-h-screen flex-col justify-center px-5 pb-8 pt-28 sm:px-8 lg:px-10 lg:pb-10 lg:pt-32">
+          <div className="mx-auto w-full max-w-7xl">
+            <div className="mx-auto max-w-6xl text-center">
               <h1 className="text-[clamp(3.7rem,11vw,11rem)] font-black leading-[0.82] text-white">
                 Your AI Pocket CFO for Nigerian Businesses
               </h1>
@@ -189,7 +255,7 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="mt-12 grid gap-4 lg:grid-cols-[0.85fr_1.3fr_0.85fr] lg:items-end">
+            <div className="mt-10 grid gap-4 lg:grid-cols-[0.85fr_1.3fr_0.85fr] lg:items-end">
               <div className="rounded-[30px] bg-white/10 p-5 ring-1 ring-white/10">
                 <p className="text-sm font-semibold text-white/60">Natural message</p>
                 <p className="mt-3 rounded-[22px] bg-white p-4 text-xl font-black leading-snug text-[#090c13]">
