@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Image from "next/image"
 import {
   ArrowRight,
@@ -343,13 +343,6 @@ const faqs = [
     ],
   },
   {
-    question: "Will PrymAgent send WhatsApp reminders to my clients?",
-    answer: [
-      "By default, no. PrymAgent can help generate reminder messages you can send yourself.",
-      "For teams, official reminders are better handled through company email or approved communication channels.",
-    ],
-  },
-  {
     question: "What is PrymAgent Solo?",
     answer: [
       "PrymAgent Solo is for individual service providers who need to create quotes, invoices, receipts, track payment status, and keep simple client records.",
@@ -360,19 +353,6 @@ const faqs = [
     answer: [
       "PrymAgent Flow is for teams and companies that need structured billing workflows across staff, finance, managers, clients, and vendors.",
       "It supports quote-to-cash, invoice-to-cash, recurring billing, vendor payables, approvals, reports, and compliance readiness.",
-    ],
-  },
-  {
-    question: "How does PrymAgent Flow pricing work?",
-    answer: [
-      "Every company starts with the Base Workspace, then adds the workflow packs and add-ons they actually need.",
-      "This helps companies avoid paying for features they do not use.",
-    ],
-  },
-  {
-    question: "What is included in the Base Workspace?",
-    answer: [
-      "The Base Workspace includes company profile, logo and brand colors, one quote or invoice template, client/vendor database, staff roles, basic audit trail, WhatsApp and web access, PDF generation, email/PDF sharing, manual payment tracking, receipt generation, basic monthly summary, and document storage.",
     ],
   },
   {
@@ -390,23 +370,10 @@ const faqs = [
     ],
   },
   {
-    question: "Can PrymAgent manage vendor invoices and recurring billing?",
-    answer: [
-      "Yes. With the Vendor Payables Pack, companies can upload vendor invoices, extract key details, route them for approval, track due dates, and view payables reports.",
-      "The Recurring Billing Pack supports scheduled billing for schools, retainers, subscriptions, property managers, clinics, and service businesses with repeated charges.",
-    ],
-  },
-  {
     question: "Does PrymAgent handle tax or FIRS e-invoicing?",
     answer: [
       "PrymAgent can support structured invoice data, VAT/TIN fields, tax invoice exports, and compliance-ready records.",
       "Live FIRS/NRS submission will only be available when the required integration and compliance pathway is complete.",
-    ],
-  },
-  {
-    question: "Can I export reports?",
-    answer: [
-      "Yes. PrymAgent can provide basic summaries, and advanced reporting can include receivables aging, revenue by client, revenue by department, quote conversion, approval cycle time, VAT/tax summaries, and CSV/PDF exports.",
     ],
   },
   {
@@ -424,12 +391,6 @@ const faqs = [
     ],
   },
   {
-    question: "Is there a monthly plan for service providers?",
-    answer: [
-      "Yes. PrymAgent Pro is ₦4,000/month and includes unlimited reasonable quotes, invoices, receipts, custom templates, client database, reports, no watermark, and priority support.",
-    ],
-  },
-  {
     question: "How much does PrymAgent Flow cost for teams?",
     answer: [
       "PrymAgent Flow starts with the Base Workspace at ₦20,000/month.",
@@ -437,35 +398,10 @@ const faqs = [
     ],
   },
   {
-    question: "Is setup free?",
-    answer: [
-      "Self-setup is free.",
-      "Assisted setup options are available: Basic assisted setup at ₦75,000, Custom workflow setup at ₦200,000, and Enterprise implementation from ₦500,000+.",
-    ],
-  },
-  {
     question: "Can PrymAgent replace Paystack or my accountant?",
     answer: [
       "No. PrymAgent does not replace Paystack. It helps manage billing workflows, invoice records, payment tracking, receipts, approvals, and reports. Paystack can be used for payment collection where needed.",
       "PrymAgent also does not replace your accountant. It helps you keep cleaner billing records, which can make your accountant's work easier.",
-    ],
-  },
-  {
-    question: "Can I use PrymAgent without payment links?",
-    answer: [
-      "Yes. You can use PrymAgent with only bank details if that is how your clients prefer to pay.",
-    ],
-  },
-  {
-    question: "Can I use PrymAgent for multiple clients?",
-    answer: [
-      "Yes. PrymAgent keeps client records, billing history, invoices, receipts, and payment status for multiple clients.",
-    ],
-  },
-  {
-    question: "Can my team use PrymAgent together?",
-    answer: [
-      "Yes. PrymAgent Flow supports multiple users, roles, permissions, approvals, and team workflows.",
     ],
   },
   {
@@ -480,14 +416,33 @@ const faqs = [
 export default function Home() {
   const [isDemoOpen, setIsDemoOpen] = useState(false)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isScrolled, setIsScrolled] = useState(false)
   const [activeMode, setActiveMode] = useState<Mode>("providers")
   const isTeams = activeMode === "teams"
+
+  useEffect(() => {
+    const handleScroll = () => setIsScrolled(window.scrollY > 24)
+
+    handleScroll()
+    window.addEventListener("scroll", handleScroll, { passive: true })
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
 
   return (
     <main className={`min-h-screen ${isTeams ? "bg-[#eef3f4]" : "bg-[#f8f8f8]"} text-[#090c13]`}>
       <section id="top" className="relative min-h-screen overflow-hidden bg-[#1b0015] text-white">
-        <header className="absolute left-0 right-0 top-0 z-30 px-4 py-4 sm:px-6 lg:px-8">
-          <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 rounded-full border border-white/12 bg-white/94 px-3 py-2 text-[#090c13] shadow-2xl shadow-black/20 backdrop-blur-xl">
+        <header
+          className={`${
+            isScrolled ? "fixed left-0 right-0 top-0 z-50 py-3" : "relative z-30 py-4"
+          } px-4 transition-all duration-500 ease-out sm:px-6 lg:px-8`}
+        >
+          <div
+            className={`mx-auto flex items-center justify-between gap-4 rounded-full border bg-white/94 px-3 text-[#090c13] backdrop-blur-xl transition-all duration-500 ease-out ${
+              isScrolled
+                ? "max-w-6xl border-black/10 py-1.5 shadow-2xl shadow-black/18"
+                : "max-w-7xl border-white/12 py-2 shadow-2xl shadow-black/20"
+            }`}
+          >
             <a href="#top" className="flex items-center gap-2 rounded-full px-2 py-1">
               <Image
                 src="/assets/icons/logohead.png"
@@ -501,14 +456,32 @@ export default function Home() {
             </a>
 
             <nav className="hidden items-center gap-1 rounded-full bg-[#f4f5f1] p-1 text-sm font-bold text-[#090c13] lg:flex">
+              <a
+                href="#top"
+                onClick={() => setActiveMode("providers")}
+                className={`rounded-full px-5 py-2.5 transition ${
+                  activeMode === "providers" ? "bg-white shadow-sm" : "hover:bg-white"
+                }`}
+              >
+                For Individuals
+              </a>
+              <a
+                href="#top"
+                onClick={() => setActiveMode("teams")}
+                className={`rounded-full px-5 py-2.5 transition ${
+                  activeMode === "teams" ? "bg-white shadow-sm" : "hover:bg-white"
+                }`}
+              >
+                For Teams
+              </a>
               <a href="#features" className="rounded-full px-5 py-2.5 transition hover:bg-white">
                 Features
               </a>
-              <a href="#how" className="rounded-full px-5 py-2.5 transition hover:bg-white">
-                How it works
-              </a>
               <a href="#pricing" className="rounded-full px-5 py-2.5 transition hover:bg-white">
                 Pricing
+              </a>
+              <a href="#faq" className="rounded-full px-5 py-2.5 transition hover:bg-white">
+                FAQ
               </a>
             </nav>
 
@@ -544,14 +517,34 @@ export default function Home() {
           {isMenuOpen && (
             <div className="mx-auto mt-3 max-w-7xl rounded-[28px] border border-white/12 bg-white p-3 text-[#090c13] shadow-2xl shadow-black/20 lg:hidden">
               <nav className="grid gap-1 text-base font-black">
-                {["features", "how", "pricing"].map((item) => (
+                <a
+                  href="#top"
+                  onClick={() => {
+                    setActiveMode("providers")
+                    setIsMenuOpen(false)
+                  }}
+                  className="rounded-[20px] bg-[#f8f8f8] px-5 py-4"
+                >
+                  For Individuals
+                </a>
+                <a
+                  href="#top"
+                  onClick={() => {
+                    setActiveMode("teams")
+                    setIsMenuOpen(false)
+                  }}
+                  className="rounded-[20px] bg-[#f8f8f8] px-5 py-4"
+                >
+                  For Teams & Companies
+                </a>
+                {["features", "pricing", "faq"].map((item) => (
                   <a
                     key={item}
                     href={`#${item}`}
                     onClick={() => setIsMenuOpen(false)}
-                    className="rounded-[20px] bg-[#f8f8f8] px-5 py-4 capitalize"
+                    className="rounded-[20px] bg-[#f8f8f8] px-5 py-4 uppercase"
                   >
-                    {item === "how" ? "How it works" : item}
+                    {item}
                   </a>
                 ))}
               </nav>
@@ -579,8 +572,9 @@ export default function Home() {
             </div>
           )}
         </header>
+        {isScrolled && <div className="h-[76px]" />}
 
-        <div className="relative z-10 flex min-h-screen flex-col justify-center px-5 pb-8 pt-28 sm:px-8 lg:px-10 lg:pb-8 lg:pt-28">
+        <div className="relative z-10 flex min-h-[calc(100vh-92px)] flex-col justify-center px-5 pb-8 pt-8 sm:px-8 lg:px-10 lg:pb-8 lg:pt-10">
           <div className="mx-auto w-full max-w-7xl">
             <div className="mx-auto max-w-6xl text-center">
               <h1 className="text-[clamp(3rem,6.5vw,6.8rem)] font-black leading-[0.9] text-white">
@@ -867,11 +861,30 @@ function ProviderContent() {
                   Start free. Upgrade when billing grows.
                 </h2>
                 <p className="mt-6 text-lg leading-8 text-[#5f636d]">
-                  Your first complete billing workflow is free: 1 quote, 1 invoice, 1 receipt, 1 client record, and payment tracking.
+                  Try the full billing flow first. After that, continue with credit bundles or PrymAgent Pro.
                 </p>
               </div>
 
               <div className="grid gap-4">
+                <div className="rounded-[30px] bg-[#1b0015] p-6 text-white shadow-xl shadow-[#1b0015]/10">
+                  <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
+                    <div>
+                      <p className="text-sm font-black text-[#b9ff66]">Free trial</p>
+                      <h3 className="mt-3 text-4xl font-black leading-none">Your first billing workflow is free.</h3>
+                      <p className="mt-4 max-w-xl text-sm leading-7 text-white/72">
+                        Create one quote, one invoice, one receipt, one client record, and track the payment status before buying credits.
+                      </p>
+                    </div>
+                    <a
+                      href={WHATSAPP_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex shrink-0 items-center justify-center rounded-full bg-[#b9ff66] px-5 py-3 text-sm font-black text-[#090c13] transition hover:bg-white"
+                    >
+                      Start free
+                    </a>
+                  </div>
+                </div>
                 <PricingPanel title="Credit bundles" rows={providerBundles} />
                 <PricingPanel title="Credit usage" rows={providerCreditUsage} />
               </div>
@@ -1187,12 +1200,12 @@ function FaqSection() {
             </p>
           </div>
 
-          <div className="grid gap-3 lg:grid-cols-2">
+          <div className="grid items-start gap-3 lg:grid-cols-2">
             {faqs.map((faq, index) => (
               <details
                 key={faq.question}
                 open={index < 2}
-                className="group rounded-[26px] bg-white p-5 shadow-sm"
+                className="group self-start rounded-[26px] bg-white p-5 shadow-sm"
               >
                 <summary className="flex cursor-pointer list-none items-start justify-between gap-4 text-xl font-black leading-tight">
                   {faq.question}
