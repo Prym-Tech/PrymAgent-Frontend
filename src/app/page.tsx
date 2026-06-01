@@ -285,6 +285,198 @@ const teamBestFor = [
   "B2B service companies",
 ]
 
+const faqs = [
+  {
+    question: "What is PrymAgent?",
+    answer: [
+      "PrymAgent is a billing and payment workflow assistant for service providers and business teams.",
+      "It helps you create quotes, invoices, receipts, track payments, keep client records, and manage simple billing workflows from WhatsApp and web.",
+    ],
+  },
+  {
+    question: "Who is PrymAgent for?",
+    answer: [
+      "PrymAgent is built for service providers like freelancers, consultants, creatives, vendors, tutors, photographers, developers, and independent professionals.",
+      "It is also built for teams and companies like agencies, schools, clinics, law firms, logistics companies, construction suppliers, real estate firms, and businesses that manage billing across multiple people.",
+    ],
+  },
+  {
+    question: "Is PrymAgent an accounting software?",
+    answer: [
+      "No. PrymAgent is not a full accounting system.",
+      "It focuses on billing workflows: quotes, invoices, receipts, payment tracking, approvals, client records, vendor bills, and simple reports.",
+    ],
+  },
+  {
+    question: "Can I use PrymAgent on WhatsApp?",
+    answer: [
+      "Yes. PrymAgent is designed to work through WhatsApp for simple actions like creating quotes, generating invoices, checking payment status, and asking for summaries.",
+      "For teams, some setup and records may also be managed through a simple web view.",
+    ],
+  },
+  {
+    question: "Can PrymAgent generate invoices, receipts, and quotations?",
+    answer: [
+      "Yes. PrymAgent can generate professional PDF invoices, branded receipts, and quotes or proforma invoices before a client pays.",
+      "Invoices can include your business name, logo, brand color, invoice number, client details, amount, due date, bank details, and optional payment link.",
+    ],
+  },
+  {
+    question: "Can I customize my invoice with my logo and brand color?",
+    answer: [
+      "Yes. You can add your business logo, brand color, payment details, terms, and other branding elements.",
+      "Custom template setup is also available if you want your documents to match your existing company format.",
+    ],
+  },
+  {
+    question: "Does PrymAgent support payment links?",
+    answer: [
+      "Yes. You can add payment links where needed. You can also use only bank details, or both bank details and a payment link.",
+      "Payment links are optional.",
+    ],
+  },
+  {
+    question: "Does PrymAgent track payments automatically?",
+    answer: [
+      "For service providers, payment tracking can be done manually by marking an invoice as paid, unpaid, part-paid, or overdue.",
+      "For teams, payment integration can be added to support Paystack confirmation and payment reference matching.",
+    ],
+  },
+  {
+    question: "Will PrymAgent send WhatsApp reminders to my clients?",
+    answer: [
+      "By default, no. PrymAgent can help generate reminder messages you can send yourself.",
+      "For teams, official reminders are better handled through company email or approved communication channels.",
+    ],
+  },
+  {
+    question: "What is PrymAgent Solo?",
+    answer: [
+      "PrymAgent Solo is for individual service providers who need to create quotes, invoices, receipts, track payment status, and keep simple client records.",
+    ],
+  },
+  {
+    question: "What is PrymAgent Flow?",
+    answer: [
+      "PrymAgent Flow is for teams and companies that need structured billing workflows across staff, finance, managers, clients, and vendors.",
+      "It supports quote-to-cash, invoice-to-cash, recurring billing, vendor payables, approvals, reports, and compliance readiness.",
+    ],
+  },
+  {
+    question: "How does PrymAgent Flow pricing work?",
+    answer: [
+      "Every company starts with the Base Workspace, then adds the workflow packs and add-ons they actually need.",
+      "This helps companies avoid paying for features they do not use.",
+    ],
+  },
+  {
+    question: "What is included in the Base Workspace?",
+    answer: [
+      "The Base Workspace includes company profile, logo and brand colors, one quote or invoice template, client/vendor database, staff roles, basic audit trail, WhatsApp and web access, PDF generation, email/PDF sharing, manual payment tracking, receipt generation, basic monthly summary, and document storage.",
+    ],
+  },
+  {
+    question: "Can my company choose only the workflow it needs?",
+    answer: [
+      "Yes. PrymAgent Flow is built around modular workflow packs: Quote-to-Cash, Invoice-to-Cash, Recurring Billing, and Vendor Payables.",
+      "You can also add approvals, reporting, payment integration, and compliance readiness where needed.",
+    ],
+  },
+  {
+    question: "Does PrymAgent support approval workflows?",
+    answer: [
+      "Yes. Teams can add approval workflows so invoices, quotes, or vendor bills can be reviewed before they are sent or marked for payment.",
+      "Advanced approval rules can include amount-based approvals, multiple approval levels, rejection reasons, and approval logs.",
+    ],
+  },
+  {
+    question: "Can PrymAgent manage vendor invoices and recurring billing?",
+    answer: [
+      "Yes. With the Vendor Payables Pack, companies can upload vendor invoices, extract key details, route them for approval, track due dates, and view payables reports.",
+      "The Recurring Billing Pack supports scheduled billing for schools, retainers, subscriptions, property managers, clinics, and service businesses with repeated charges.",
+    ],
+  },
+  {
+    question: "Does PrymAgent handle tax or FIRS e-invoicing?",
+    answer: [
+      "PrymAgent can support structured invoice data, VAT/TIN fields, tax invoice exports, and compliance-ready records.",
+      "Live FIRS/NRS submission will only be available when the required integration and compliance pathway is complete.",
+    ],
+  },
+  {
+    question: "Can I export reports?",
+    answer: [
+      "Yes. PrymAgent can provide basic summaries, and advanced reporting can include receivables aging, revenue by client, revenue by department, quote conversion, approval cycle time, VAT/tax summaries, and CSV/PDF exports.",
+    ],
+  },
+  {
+    question: "Is there a free trial?",
+    answer: [
+      "For service providers, your first complete billing workflow is free: one quote, one invoice, one receipt, one client record, and payment status tracking.",
+      "For teams, setup depends on the workflow required. A demo or guided setup can be provided before activation.",
+    ],
+  },
+  {
+    question: "How much does PrymAgent Solo cost?",
+    answer: [
+      "Service providers can use credit bundles: 10 credits for ₦1,500, 25 credits for ₦3,000, or 60 credits for ₦6,000.",
+      "Credit usage starts at 2 credits for branded quotes, 3 credits for branded invoices, 1 credit for receipts, and 5 credits for annual PDF reports. Client profile updates, payment status logs, and earnings summaries are free.",
+    ],
+  },
+  {
+    question: "Is there a monthly plan for service providers?",
+    answer: [
+      "Yes. PrymAgent Pro is ₦4,000/month and includes unlimited reasonable quotes, invoices, receipts, custom templates, client database, reports, no watermark, and priority support.",
+    ],
+  },
+  {
+    question: "How much does PrymAgent Flow cost for teams?",
+    answer: [
+      "PrymAgent Flow starts with the Base Workspace at ₦20,000/month.",
+      "Companies can then add workflow packs and add-ons based on their needs. Extra users cost ₦1,000/user/month after the first 5 users.",
+    ],
+  },
+  {
+    question: "Is setup free?",
+    answer: [
+      "Self-setup is free.",
+      "Assisted setup options are available: Basic assisted setup at ₦75,000, Custom workflow setup at ₦200,000, and Enterprise implementation from ₦500,000+.",
+    ],
+  },
+  {
+    question: "Can PrymAgent replace Paystack or my accountant?",
+    answer: [
+      "No. PrymAgent does not replace Paystack. It helps manage billing workflows, invoice records, payment tracking, receipts, approvals, and reports. Paystack can be used for payment collection where needed.",
+      "PrymAgent also does not replace your accountant. It helps you keep cleaner billing records, which can make your accountant's work easier.",
+    ],
+  },
+  {
+    question: "Can I use PrymAgent without payment links?",
+    answer: [
+      "Yes. You can use PrymAgent with only bank details if that is how your clients prefer to pay.",
+    ],
+  },
+  {
+    question: "Can I use PrymAgent for multiple clients?",
+    answer: [
+      "Yes. PrymAgent keeps client records, billing history, invoices, receipts, and payment status for multiple clients.",
+    ],
+  },
+  {
+    question: "Can my team use PrymAgent together?",
+    answer: [
+      "Yes. PrymAgent Flow supports multiple users, roles, permissions, approvals, and team workflows.",
+    ],
+  },
+  {
+    question: "How do I get started?",
+    answer: [
+      "Service providers can start directly on WhatsApp.",
+      "Teams and companies can book a workflow demo so PrymAgent can recommend the right setup based on their billing process.",
+    ],
+  },
+]
+
 export default function Home() {
   const [isDemoOpen, setIsDemoOpen] = useState(false)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -503,14 +695,11 @@ export default function Home() {
 
       {isTeams ? <TeamsContent /> : <ProviderContent />}
 
+      <FaqSection />
+
       <FinalSection setActiveMode={setActiveMode} />
 
-      <footer className="px-5 py-8 text-center sm:px-8">
-        <p className="text-sm font-black">PrymAgent</p>
-        <p className="mt-2 text-sm text-[#5f636d]">Business billing, payment tracking, and records made simple.</p>
-        <p className="mt-2 text-sm text-[#5f636d]">A product of Prym Technologies Limited.</p>
-        <p className="mt-2 text-xs text-[#7b7f88]">Copyright 2026 PrymAgent.</p>
-      </footer>
+      <SiteFooter setActiveMode={setActiveMode} />
 
       {isDemoOpen && (
         <div
@@ -977,6 +1166,152 @@ function FinalSection({ setActiveMode }: { setActiveMode: (mode: Mode) => void }
         </div>
       </div>
     </section>
+  )
+}
+
+function FaqSection() {
+  return (
+    <section id="faq" className="mx-auto max-w-[1500px] px-3 py-3 sm:px-5">
+      <div className="rounded-[38px] bg-[#f0f3eb] px-5 py-16 sm:px-8 lg:px-12 lg:py-24">
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-10 grid gap-6 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
+            <div>
+              <p className="text-base font-black text-[#557a2d]">FAQ</p>
+              <h2 className="mt-4 text-[clamp(2.5rem,5.2vw,4.8rem)] font-black leading-[0.9]">
+                Questions people ask before choosing PrymAgent.
+              </h2>
+            </div>
+            <p className="max-w-2xl text-lg leading-8 text-[#5f636d]">
+              Clear answers on WhatsApp use, quotes, invoices, receipts, payment links, team workflows,
+              approvals, pricing, setup, and reporting.
+            </p>
+          </div>
+
+          <div className="grid gap-3 lg:grid-cols-2">
+            {faqs.map((faq, index) => (
+              <details
+                key={faq.question}
+                open={index < 2}
+                className="group rounded-[26px] bg-white p-5 shadow-sm"
+              >
+                <summary className="flex cursor-pointer list-none items-start justify-between gap-4 text-xl font-black leading-tight">
+                  {faq.question}
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#090c13] text-sm text-white transition group-open:rotate-45">
+                    +
+                  </span>
+                </summary>
+                <div className="mt-4 space-y-3 border-t border-[#ececec] pt-4">
+                  {faq.answer.map((paragraph) => (
+                    <p key={paragraph} className="text-sm leading-7 text-[#4f545d]">
+                      {paragraph}
+                    </p>
+                  ))}
+                </div>
+              </details>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function SiteFooter({ setActiveMode }: { setActiveMode: (mode: Mode) => void }) {
+  return (
+    <footer className="bg-[#f8f8f8] px-5 py-10 sm:px-8">
+      <div className="mx-auto max-w-7xl rounded-[34px] bg-white p-6 shadow-sm sm:p-8">
+        <div className="grid gap-10 lg:grid-cols-[1.15fr_0.85fr_0.85fr_0.85fr]">
+          <div>
+            <div className="flex items-center gap-2">
+              <Image
+                src="/assets/icons/logohead.png"
+                alt="PrymAgent logo"
+                width={38}
+                height={38}
+                className="h-9 w-9"
+              />
+              <span className="text-2xl font-black">PrymAgent</span>
+            </div>
+            <p className="mt-5 max-w-sm text-base leading-7 text-[#5f636d]">
+              Business billing, payment tracking, and records made simple for service providers and Nigerian teams.
+            </p>
+            <p className="mt-5 text-sm font-bold text-[#090c13]">A product of Prym Technologies Limited.</p>
+          </div>
+
+          <FooterColumn
+            title="Product"
+            links={[
+              { label: "For Service Providers", href: "#top", onClick: () => setActiveMode("providers") },
+              { label: "For Teams & Companies", href: "#top", onClick: () => setActiveMode("teams") },
+              { label: "FAQ", href: "#faq" },
+            ]}
+          />
+
+          <FooterColumn
+            title="Explore"
+            links={[
+              { label: "Features", href: "#features" },
+              { label: "How it works", href: "#how" },
+              { label: "Pricing", href: "#pricing" },
+              { label: "Packages", href: "#packages" },
+            ]}
+          />
+
+          <div>
+            <h3 className="text-sm font-black text-[#090c13]">Get started</h3>
+            <div className="mt-4 grid gap-3">
+              <a
+                href={WHATSAPP_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => setActiveMode("providers")}
+                className="rounded-full bg-[#b9ff66] px-5 py-3 text-center text-sm font-black text-[#090c13] transition hover:bg-[#d5ff99]"
+              >
+                Start on WhatsApp
+              </a>
+              <a
+                href={TEAM_DEMO_URL}
+                onClick={() => setActiveMode("teams")}
+                className="rounded-full bg-[#090c13] px-5 py-3 text-center text-sm font-black text-white transition hover:bg-[#2b2f37]"
+              >
+                Book a Team Demo
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-10 flex flex-col gap-3 border-t border-[#ececec] pt-6 text-sm text-[#7b7f88] sm:flex-row sm:items-center sm:justify-between">
+          <p>Copyright 2026 PrymAgent.</p>
+          <p>Built for cleaner billing workflows.</p>
+        </div>
+      </div>
+    </footer>
+  )
+}
+
+function FooterColumn({
+  title,
+  links,
+}: {
+  title: string
+  links: { label: string; href: string; onClick?: () => void }[]
+}) {
+  return (
+    <div>
+      <h3 className="text-sm font-black text-[#090c13]">{title}</h3>
+      <div className="mt-4 grid gap-3">
+        {links.map((link) => (
+          <a
+            key={link.label}
+            href={link.href}
+            onClick={link.onClick}
+            className="text-sm font-bold text-[#5f636d] transition hover:text-[#090c13]"
+          >
+            {link.label}
+          </a>
+        ))}
+      </div>
+    </div>
   )
 }
 
