@@ -601,28 +601,28 @@ export default function Home() {
         <div className="relative z-10 flex min-h-[calc(100vh-92px)] flex-col justify-center px-5 pb-8 pt-8 sm:px-8 lg:px-10 lg:pb-8 lg:pt-10">
           <div className="mx-auto w-full max-w-7xl">
             <div className="mx-auto max-w-6xl text-center">
-              <h1 className="text-[clamp(2.45rem,11vw,6.8rem)] font-black leading-[0.92] text-white">
-                AI billing assistant for service providers and business teams.
+              <h1 className="text-[clamp(2.45rem,10vw,5.9rem)] font-black leading-[0.92] text-white">
+                Business billing, payments, and records made simple with AI.
               </h1>
 
               <p className="mx-auto mt-6 max-w-4xl text-base leading-7 text-white/78 sm:text-xl sm:leading-8">
-                Create quotes, invoices, receipts, track payments, and keep clean records using simple chat.
+                Create quotes, invoices, receipts, track payments, and manage billing workflows from WhatsApp and web — whether you work alone or with a team.
               </p>
 
               <div className="mx-auto mt-7 max-w-3xl rounded-[26px] bg-white p-2 text-left shadow-2xl shadow-black/30">
                 <p className="px-3 pb-2 pt-1 text-center text-xs font-black text-[#7b7f88]">
-                  Choose the category that best fits you. The page updates with the right workflow, features, and pricing.
+                  Choose the category that best fits you.
                 </p>
                 <div className="grid gap-2 sm:grid-cols-2">
                 <ModeTab
                   title="For Service Providers"
-                  subtitle="Your AI billing assistant on WhatsApp."
+                  subtitle="AI finance assistant for client billing."
                   active={activeMode === "providers"}
                   onClick={() => setActiveMode("providers")}
                 />
                 <ModeTab
                   title="For Teams & Companies"
-                  subtitle="AI billing workflows for Nigerian teams."
+                  subtitle="AI billing workflows for your company."
                   active={activeMode === "teams"}
                   onClick={() => setActiveMode("teams")}
                 />
