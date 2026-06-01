@@ -7,12 +7,16 @@ import {
   BarChart3,
   Building2,
   CheckCircle2,
+  Clock3,
   ClipboardList,
   FileText,
+  FileWarning,
   Menu,
   MessageCircle,
   Play,
   Receipt,
+  Route,
+  UserCheck,
   UsersRound,
   WalletCards,
   X,
@@ -136,35 +140,44 @@ const teamCapabilities = [
 
 const teamBenefits = [
   {
+    icon: UsersRound,
     title: "One shared billing source",
     copy:
       "Sales, finance, managers, and operations can work from the same client, invoice, receipt, and payment history instead of scattered chats.",
   },
   {
+    icon: UserCheck,
     title: "Approvals before documents go out",
     copy:
       "Teams can route quotes, invoices, discounts, and payment terms for review before clients receive final documents.",
   },
   {
+    icon: WalletCards,
     title: "Payment visibility for everyone",
     copy:
       "See what is pending, paid, overdue, or waiting for a receipt without asking three people for status updates.",
   },
   {
+    icon: BarChart3,
     title: "Cleaner records for reporting",
     copy:
       "Keep billing documents, client activity, vendor bills, and audit trails organized for management, tax, and finance reviews.",
   },
+  {
+    icon: FileWarning,
+    title: "AI catches the admin gaps",
+    copy:
+      "PrymAgent helps detect missing billing details, extract document data, summarize unpaid invoices, and reduce repetitive formatting.",
+  },
 ]
 
-const aiFlowTasks = [
-  "turn plain-language requests into draft quotes or invoices",
-  "extract details from vendor invoices and uploaded documents",
-  "detect missing billing information before documents move forward",
-  "structure client, invoice, payment, and receipt records",
-  "summarize unpaid invoices and outstanding balances",
-  "generate payment, revenue, and workflow reports",
-  "reduce manual formatting and repetitive admin work",
+const scatteredBilling = [
+  { icon: MessageCircle, text: "Sales sends details." },
+  { icon: FileText, text: "Finance edits documents." },
+  { icon: UserCheck, text: "Managers approve manually." },
+  { icon: Clock3, text: "Clients delay payment." },
+  { icon: Receipt, text: "Receipts are generated late." },
+  { icon: BarChart3, text: "Reports are scattered." },
 ]
 
 const workflowPacks = [
@@ -1011,7 +1024,7 @@ function TeamsContent() {
               {teamBenefits.map((benefit) => (
                 <article key={benefit.title} className="rounded-[28px] bg-[#e9f1f2] p-5">
                   <div className="mb-8 flex h-12 w-12 items-center justify-center rounded-full bg-[#1b0015] text-white">
-                    <CheckCircle2 className="h-6 w-6" />
+                    <benefit.icon className="h-6 w-6" />
                   </div>
                   <h3 className="text-2xl font-black leading-none">{benefit.title}</h3>
                   <p className="mt-4 text-sm leading-6 text-[#4f545d]">{benefit.copy}</p>
@@ -1025,26 +1038,28 @@ function TeamsContent() {
       <section className="mx-auto max-w-7xl px-4 py-12 sm:px-8 lg:py-24">
         <div className="grid gap-8 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
           <div>
-            <p className="text-base font-black text-[#315d63]">What the AI handles</p>
+            <p className="text-base font-black text-[#315d63]">Why teams need one workflow</p>
             <h2 className="mt-4 max-w-3xl text-[clamp(2.2rem,9vw,4.8rem)] font-black leading-[0.92]">
-              Less formatting, fewer missing details, cleaner handoffs.
+              Stop losing billing work inside chats, emails, and spreadsheets.
             </h2>
             <p className="mt-6 max-w-xl text-lg leading-8 text-[#5f636d]">
-              PrymAgent uses AI to turn everyday billing requests and documents into structured work your team can review,
-              approve, send, and track.
+              Many companies manage billing across different people and channels. PrymAgent Flow brings the process
+              into one clear workflow.
             </p>
           </div>
 
           <div className="rounded-[28px] bg-[#dfeaec] p-4 sm:rounded-[34px] sm:p-6">
             <div className="grid gap-3 sm:grid-cols-2">
-              {aiFlowTasks.map((task) => (
-                <div key={task} className="rounded-[22px] bg-white px-4 py-4 text-sm font-bold leading-6 text-[#4f545d]">
-                  {task}
+              {scatteredBilling.map((item) => (
+                <div key={item.text} className="flex items-start gap-3 rounded-[22px] bg-white px-4 py-4 text-sm font-bold leading-6 text-[#4f545d]">
+                  <item.icon className="mt-0.5 h-5 w-5 shrink-0 text-[#315d63]" />
+                  <span>{item.text}</span>
                 </div>
               ))}
             </div>
             <p className="mt-4 rounded-[22px] bg-[#1b0015] px-5 py-4 text-sm font-bold leading-6 text-white">
-              Humans still control approvals, sending, and payment confirmation where needed.
+              Instead of chasing updates across teams, PrymAgent Flow keeps quotes, approvals, invoices, payments,
+              receipts, and reports moving through one shared path.
             </p>
           </div>
         </div>
