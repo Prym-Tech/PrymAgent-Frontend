@@ -157,6 +157,16 @@ const teamBenefits = [
   },
 ]
 
+const aiFlowTasks = [
+  "turn plain-language requests into draft quotes or invoices",
+  "extract details from vendor invoices and uploaded documents",
+  "detect missing billing information before documents move forward",
+  "structure client, invoice, payment, and receipt records",
+  "summarize unpaid invoices and outstanding balances",
+  "generate payment, revenue, and workflow reports",
+  "reduce manual formatting and repetitive admin work",
+]
+
 const workflowPacks = [
   {
     title: "Quote-to-Cash Pack",
@@ -319,6 +329,20 @@ const faqs = [
     answer: [
       "Yes. PrymAgent can generate professional PDF invoices, branded receipts, and quotes or proforma invoices before a client pays.",
       "Invoices can include your business name, logo, brand color, invoice number, client details, amount, due date, bank details, and optional payment link.",
+    ],
+  },
+  {
+    question: "How does PrymAgent use AI?",
+    answer: [
+      "PrymAgent uses AI to understand simple billing requests, generate quotes and invoices, extract details from documents, summarize payment records, and help teams reduce manual admin work.",
+      "For sensitive business actions like approvals, sending invoices, and confirming payments, humans remain in control.",
+    ],
+  },
+  {
+    question: "Does the AI send invoices or approve payments automatically?",
+    answer: [
+      "Only if your workflow allows it.",
+      "For individuals, PrymAgent generates the document and you decide when to send it. For teams, PrymAgent can draft, route, and prepare documents, but approvals and final actions can be controlled by the right staff members.",
     ],
   },
   {
@@ -578,28 +602,27 @@ export default function Home() {
           <div className="mx-auto w-full max-w-7xl">
             <div className="mx-auto max-w-6xl text-center">
               <h1 className="text-[clamp(2.45rem,11vw,6.8rem)] font-black leading-[0.92] text-white">
-                Business billing, payments, and records made simple.
+                AI billing assistant for service providers and business teams.
               </h1>
 
               <p className="mx-auto mt-6 max-w-4xl text-base leading-7 text-white/78 sm:text-xl sm:leading-8">
-                PrymAgent helps independent professionals and business teams create quotes, invoices, receipts,
-                track payments, and keep clean records from one simple workflow.
+                Create quotes, invoices, receipts, track payments, and keep clean records using simple chat.
               </p>
 
               <div className="mx-auto mt-7 max-w-3xl rounded-[26px] bg-white p-2 text-left shadow-2xl shadow-black/30">
                 <p className="px-3 pb-2 pt-1 text-center text-xs font-black text-[#7b7f88]">
-                  Choose who you are using PrymAgent for. The page updates below.
+                  Choose the category that best fits you. The page updates with the right workflow, features, and pricing.
                 </p>
                 <div className="grid gap-2 sm:grid-cols-2">
                 <ModeTab
                   title="For Service Providers"
-                  subtitle="Professional billing on WhatsApp."
+                  subtitle="Your AI billing assistant on WhatsApp."
                   active={activeMode === "providers"}
                   onClick={() => setActiveMode("providers")}
                 />
                 <ModeTab
                   title="For Teams & Companies"
-                  subtitle="Custom billing workflows for Nigerian teams."
+                  subtitle="AI billing workflows for Nigerian teams."
                   active={activeMode === "teams"}
                   onClick={() => setActiveMode("teams")}
                 />
@@ -641,7 +664,7 @@ export default function Home() {
                     <div>
                       <p className="text-sm font-bold text-[#7b7f88]">{isTeams ? "PrymAgent Flow" : "PrymAgent"}</p>
                       <h2 className="mt-1 text-2xl font-black sm:text-3xl">
-                        {isTeams ? "Billing runs in one workflow." : "Professional billing on WhatsApp."}
+                        {isTeams ? "AI-assisted billing workflow." : "AI billing on WhatsApp."}
                       </h2>
                     </div>
                     <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-[#1b0015] text-white">
@@ -769,13 +792,14 @@ function ProviderContent() {
       <section className="mx-auto max-w-7xl px-4 py-12 sm:px-8 lg:py-24">
         <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
           <div>
-            <p className="text-base font-black text-[#557a2d]">Professional billing on WhatsApp</p>
+            <p className="text-base font-black text-[#557a2d]">Your AI billing assistant on WhatsApp</p>
             <h2 className="mt-4 max-w-3xl text-[clamp(2.2rem,9vw,4.8rem)] font-black leading-[0.92]">
               Stop sending rough payment details.
             </h2>
             <p className="mt-6 max-w-xl text-lg leading-8 text-[#5f636d]">
-              Create quotes, invoices, receipts, and client payment records without spreadsheets, design tools,
-              or accounting software.
+              PrymAgent Solo helps freelancers, consultants, creatives, and independent professionals create
+              branded quotes, invoices, and receipts from simple WhatsApp messages while keeping track of clients,
+              payments, and earnings.
             </p>
           </div>
 
@@ -947,12 +971,13 @@ function TeamsContent() {
       <section className="mx-auto max-w-7xl px-4 py-12 sm:px-8 lg:py-24">
         <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
           <div>
-            <p className="text-base font-black text-[#315d63]">PrymAgent Flow</p>
+            <p className="text-base font-black text-[#315d63]">AI billing workflows for Nigerian teams</p>
             <h2 className="mt-4 max-w-3xl text-[clamp(2.2rem,9vw,4.8rem)] font-black leading-[0.92]">
               Your company billing workflow, automated around how you already work.
             </h2>
             <p className="mt-6 max-w-xl text-lg leading-8 text-[#5f636d]">
-              Manage quotes, invoices, approvals, payment tracking, receipts, vendor bills, and reports without forcing everyone into a heavy accounting system.
+              PrymAgent Flow is an AI-assisted billing workflow system that helps companies manage quotes, invoices,
+              approvals, payment tracking, receipts, vendor bills, and reports based on their actual workflow.
             </p>
           </div>
 
@@ -993,6 +1018,34 @@ function TeamsContent() {
                 </article>
               ))}
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-4 py-12 sm:px-8 lg:py-24">
+        <div className="grid gap-8 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
+          <div>
+            <p className="text-base font-black text-[#315d63]">What the AI handles</p>
+            <h2 className="mt-4 max-w-3xl text-[clamp(2.2rem,9vw,4.8rem)] font-black leading-[0.92]">
+              Less formatting, fewer missing details, cleaner handoffs.
+            </h2>
+            <p className="mt-6 max-w-xl text-lg leading-8 text-[#5f636d]">
+              PrymAgent uses AI to turn everyday billing requests and documents into structured work your team can review,
+              approve, send, and track.
+            </p>
+          </div>
+
+          <div className="rounded-[28px] bg-[#dfeaec] p-4 sm:rounded-[34px] sm:p-6">
+            <div className="grid gap-3 sm:grid-cols-2">
+              {aiFlowTasks.map((task) => (
+                <div key={task} className="rounded-[22px] bg-white px-4 py-4 text-sm font-bold leading-6 text-[#4f545d]">
+                  {task}
+                </div>
+              ))}
+            </div>
+            <p className="mt-4 rounded-[22px] bg-[#1b0015] px-5 py-4 text-sm font-bold leading-6 text-white">
+              Humans still control approvals, sending, and payment confirmation where needed.
+            </p>
           </div>
         </div>
       </section>
@@ -1252,7 +1305,7 @@ function SiteFooter({ setActiveMode }: { setActiveMode: (mode: Mode) => void }) 
               <span className="text-2xl font-black">PrymAgent</span>
             </div>
             <p className="mt-5 max-w-sm text-base leading-7 text-[#5f636d]">
-              Business billing, payment tracking, and records made simple for service providers and Nigerian teams.
+              AI-assisted billing, payment tracking, and records made simple for service providers and Nigerian teams.
             </p>
             <p className="mt-5 text-sm font-bold text-[#090c13]">A product of Prym Technologies Limited.</p>
           </div>
