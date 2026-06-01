@@ -373,7 +373,7 @@ const faqs = [
     question: "Does PrymAgent handle tax or FIRS e-invoicing?",
     answer: [
       "PrymAgent can support structured invoice data, VAT/TIN fields, tax invoice exports, and compliance-ready records.",
-      "Live FIRS/NRS submission will only be available when the required integration and compliance pathway is complete.",
+      "Direct FIRS/NRS submission is on our roadmap. For now, PrymAgent helps your team keep the structured billing records needed to move faster when those integrations are ready.",
     ],
   },
   {
@@ -577,16 +577,20 @@ export default function Home() {
         <div className="relative z-10 flex min-h-[calc(100vh-92px)] flex-col justify-center px-5 pb-8 pt-8 sm:px-8 lg:px-10 lg:pb-8 lg:pt-10">
           <div className="mx-auto w-full max-w-7xl">
             <div className="mx-auto max-w-6xl text-center">
-              <h1 className="text-[clamp(3rem,6.5vw,6.8rem)] font-black leading-[0.9] text-white">
+              <h1 className="text-[clamp(2.45rem,11vw,6.8rem)] font-black leading-[0.92] text-white">
                 Business billing, payments, and records made simple.
               </h1>
 
-              <p className="mx-auto mt-6 max-w-4xl text-lg leading-8 text-white/78 sm:text-xl">
+              <p className="mx-auto mt-6 max-w-4xl text-base leading-7 text-white/78 sm:text-xl sm:leading-8">
                 PrymAgent helps independent professionals and business teams create quotes, invoices, receipts,
                 track payments, and keep clean records from one simple workflow.
               </p>
 
-              <div className="mx-auto mt-7 grid max-w-3xl gap-2 rounded-[30px] bg-white p-2 text-left shadow-2xl shadow-black/30 sm:grid-cols-2">
+              <div className="mx-auto mt-7 max-w-3xl rounded-[26px] bg-white p-2 text-left shadow-2xl shadow-black/30">
+                <p className="px-3 pb-2 pt-1 text-center text-xs font-black text-[#7b7f88]">
+                  Choose who you are using PrymAgent for. The page updates below.
+                </p>
+                <div className="grid gap-2 sm:grid-cols-2">
                 <ModeTab
                   title="For Service Providers"
                   subtitle="Professional billing on WhatsApp."
@@ -599,6 +603,7 @@ export default function Home() {
                   active={activeMode === "teams"}
                   onClick={() => setActiveMode("teams")}
                 />
+                </div>
               </div>
 
               <div className="mx-auto mt-6 flex max-w-2xl flex-col gap-3 rounded-[28px] bg-white/10 p-2 ring-1 ring-white/12 sm:flex-row">
@@ -635,11 +640,11 @@ export default function Home() {
                   <div className="flex items-center justify-between gap-4 border-b border-[#dfe6e8] pb-5">
                     <div>
                       <p className="text-sm font-bold text-[#7b7f88]">{isTeams ? "PrymAgent Flow" : "PrymAgent"}</p>
-                      <h2 className="mt-1 text-3xl font-black">
+                      <h2 className="mt-1 text-2xl font-black sm:text-3xl">
                         {isTeams ? "Billing runs in one workflow." : "Professional billing on WhatsApp."}
                       </h2>
                     </div>
-                    <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#1b0015] text-white">
+                    <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-[#1b0015] text-white">
                       {isTeams ? <Building2 className="h-7 w-7" /> : <MessageCircle className="h-7 w-7" />}
                     </div>
                   </div>
@@ -670,10 +675,10 @@ export default function Home() {
               </div>
 
               <div className="rounded-[30px] bg-white p-5 text-[#090c13]">
-                <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#b9ff66]">
+                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-[#b9ff66]">
                   {isTeams ? <UsersRound className="h-7 w-7" /> : <FileText className="h-7 w-7" />}
                 </div>
-                <h2 className="mt-6 text-3xl font-black leading-none">
+                <h2 className="mt-6 text-2xl font-black leading-none sm:text-3xl">
                   {isTeams ? "Built for Nigerian teams." : "Built for service providers."}
                 </h2>
                 <p className="mt-4 text-sm leading-6 text-[#5f636d]">
@@ -761,11 +766,11 @@ function ModeTab({
 function ProviderContent() {
   return (
     <>
-      <section className="mx-auto max-w-7xl px-5 py-16 sm:px-8 lg:py-24">
+      <section className="mx-auto max-w-7xl px-4 py-12 sm:px-8 lg:py-24">
         <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
           <div>
             <p className="text-base font-black text-[#557a2d]">Professional billing on WhatsApp</p>
-            <h2 className="mt-4 max-w-3xl text-[clamp(2.5rem,5.2vw,4.8rem)] font-black leading-[0.9]">
+            <h2 className="mt-4 max-w-3xl text-[clamp(2.2rem,9vw,4.8rem)] font-black leading-[0.92]">
               Stop sending rough payment details.
             </h2>
             <p className="mt-6 max-w-xl text-lg leading-8 text-[#5f636d]">
@@ -774,7 +779,7 @@ function ProviderContent() {
             </p>
           </div>
 
-          <div className="rounded-[34px] bg-[#f0f3eb] p-5 sm:p-7">
+          <div className="rounded-[28px] bg-[#f0f3eb] p-4 sm:rounded-[34px] sm:p-7">
             <div className="grid gap-3 sm:grid-cols-2">
               {providerCanDo.map((point) => (
                 <div key={point} className="rounded-[22px] bg-white px-5 py-4 text-lg font-black">
@@ -786,13 +791,13 @@ function ProviderContent() {
         </div>
       </section>
 
-      <section id="features" className="mx-auto max-w-[1500px] px-3 py-3 sm:px-5">
-        <div className="rounded-[38px] bg-white px-5 py-16 sm:px-8 lg:px-12 lg:py-24">
+      <section id="features" className="mx-auto max-w-[1500px] px-2 py-2 sm:px-5 sm:py-3">
+        <div className="rounded-[30px] bg-white px-4 py-12 sm:rounded-[38px] sm:px-8 lg:px-12 lg:py-24">
           <div className="mx-auto max-w-7xl">
             <div className="mb-10 flex flex-col justify-between gap-5 lg:flex-row lg:items-end">
               <div>
                 <p className="text-base font-black text-[#557a2d]">What you can do</p>
-                <h2 className="mt-4 max-w-3xl text-[clamp(2.5rem,5.2vw,4.8rem)] font-black leading-[0.9]">
+                <h2 className="mt-4 max-w-3xl text-[clamp(2.2rem,9vw,4.8rem)] font-black leading-[0.92]">
                   Cleaner billing from first quote to final receipt.
                 </h2>
               </div>
@@ -803,11 +808,11 @@ function ProviderContent() {
 
             <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
               {providerFeatures.map((item) => (
-                <article key={item.title} className={`${item.accent} rounded-[30px] p-5 sm:p-6`}>
-                  <div className="mb-10 flex h-14 w-14 items-center justify-center rounded-full bg-[#090c13] text-white">
+                <article key={item.title} className={`${item.accent} rounded-[26px] p-4 sm:rounded-[30px] sm:p-6`}>
+                  <div className="mb-8 flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-[#090c13] text-white sm:mb-10">
                     <item.icon className="h-7 w-7" />
                   </div>
-                  <h3 className="text-3xl font-black leading-none">{item.title}</h3>
+                  <h3 className="text-2xl font-black leading-none sm:text-3xl">{item.title}</h3>
                   <p className="mt-5 text-base leading-7 text-[#4f545d]">{item.copy}</p>
                   {item.example && (
                     <p className="mt-5 rounded-[20px] bg-white/75 p-4 text-sm font-bold leading-6 text-[#090c13]">
@@ -821,13 +826,13 @@ function ProviderContent() {
         </div>
       </section>
 
-      <section id="how" className="mx-auto max-w-7xl px-5 py-16 sm:px-8 lg:py-24">
+      <section id="how" className="mx-auto max-w-7xl px-4 py-12 sm:px-8 lg:py-24">
         <div className="grid gap-8 lg:grid-cols-[1fr_0.95fr] lg:items-stretch">
-          <div className="rounded-[36px] bg-[#1b0015] p-6 text-white sm:p-8 lg:p-10">
-            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#b9ff66] text-[#090c13]">
+          <div className="rounded-[30px] bg-[#1b0015] p-5 text-white sm:rounded-[36px] sm:p-8 lg:p-10">
+            <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-[#b9ff66] text-[#090c13]">
               <MessageCircle className="h-8 w-8" />
             </div>
-            <h2 className="mt-10 max-w-3xl text-[clamp(2.4rem,4.8vw,4.6rem)] font-black leading-[0.92]">
+            <h2 className="mt-8 max-w-3xl text-[clamp(2.15rem,8.5vw,4.6rem)] font-black leading-[0.94] sm:mt-10">
               Tell PrymAgent what you need.
             </h2>
             <p className="mt-6 max-w-xl text-lg leading-8 text-white/72">
@@ -851,13 +856,13 @@ function ProviderContent() {
         </div>
       </section>
 
-      <section id="pricing" className="mx-auto max-w-[1500px] px-3 py-3 sm:px-5">
-        <div className="rounded-[38px] bg-[#f6eef5] px-5 py-16 sm:px-8 lg:px-12 lg:py-24">
+      <section id="pricing" className="mx-auto max-w-[1500px] px-2 py-2 sm:px-5 sm:py-3">
+        <div className="rounded-[30px] bg-[#f6eef5] px-4 py-12 sm:rounded-[38px] sm:px-8 lg:px-12 lg:py-24">
           <div className="mx-auto max-w-7xl">
             <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
               <div>
                 <p className="text-base font-black text-[#7a3c69]">Pricing for service providers</p>
-                <h2 className="mt-4 text-[clamp(2.5rem,5.2vw,4.8rem)] font-black leading-[0.9]">
+                <h2 className="mt-4 text-[clamp(2.2rem,9vw,4.8rem)] font-black leading-[0.92]">
                   Start free. Upgrade when billing grows.
                 </h2>
                 <p className="mt-6 text-lg leading-8 text-[#5f636d]">
@@ -870,7 +875,7 @@ function ProviderContent() {
                   <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
                     <div>
                       <p className="text-sm font-black text-[#b9ff66]">Free trial</p>
-                      <h3 className="mt-3 text-4xl font-black leading-none">Your first billing workflow is free.</h3>
+                      <h3 className="mt-3 text-3xl font-black leading-none sm:text-4xl">Your first billing workflow is free.</h3>
                       <p className="mt-4 max-w-xl text-sm leading-7 text-white/72">
                         Create one quote, one invoice, one receipt, one client record, and track the payment status before buying credits.
                       </p>
@@ -893,7 +898,7 @@ function ProviderContent() {
             <div className="mt-6 grid gap-4 lg:grid-cols-2">
               <div className="rounded-[30px] bg-[#1b0015] p-6 text-white">
                 <p className="text-base font-black text-[#b9ff66]">PrymAgent Pro</p>
-                <h3 className="mt-4 text-5xl font-black">₦4,000/month</h3>
+                <h3 className="mt-4 text-4xl font-black sm:text-5xl">₦4,000/month</h3>
                 <p className="mt-4 text-white/70">For active service providers.</p>
                 <FeatureList
                   dark
@@ -912,7 +917,7 @@ function ProviderContent() {
 
               <div className="rounded-[30px] bg-white p-6">
                 <p className="text-base font-black text-[#557a2d]">Custom template setup</p>
-                <h3 className="mt-4 text-5xl font-black">₦5,000-₦20,000</h3>
+                <h3 className="mt-4 text-4xl font-black sm:text-5xl">₦5,000-₦20,000</h3>
                 <p className="mt-4 text-[#5f636d]">One-time setup for documents that match your brand exactly.</p>
                 <FeatureList
                   items={[
@@ -939,11 +944,11 @@ function ProviderContent() {
 function TeamsContent() {
   return (
     <>
-      <section className="mx-auto max-w-7xl px-5 py-16 sm:px-8 lg:py-24">
+      <section className="mx-auto max-w-7xl px-4 py-12 sm:px-8 lg:py-24">
         <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
           <div>
             <p className="text-base font-black text-[#315d63]">PrymAgent Flow</p>
-            <h2 className="mt-4 max-w-3xl text-[clamp(2.5rem,5.2vw,4.8rem)] font-black leading-[0.9]">
+            <h2 className="mt-4 max-w-3xl text-[clamp(2.2rem,9vw,4.8rem)] font-black leading-[0.92]">
               Your company billing workflow, automated around how you already work.
             </h2>
             <p className="mt-6 max-w-xl text-lg leading-8 text-[#5f636d]">
@@ -951,7 +956,7 @@ function TeamsContent() {
             </p>
           </div>
 
-          <div className="rounded-[34px] bg-[#dfeaec] p-5 sm:p-7">
+          <div className="rounded-[28px] bg-[#dfeaec] p-4 sm:rounded-[34px] sm:p-7">
             <div className="grid gap-3 sm:grid-cols-2">
               {teamCapabilities.map((point) => (
                 <div key={point} className="rounded-[22px] bg-white px-5 py-4 text-lg font-black">
@@ -963,12 +968,12 @@ function TeamsContent() {
         </div>
       </section>
 
-      <section id="features" className="mx-auto max-w-[1500px] px-3 py-3 sm:px-5">
-        <div className="rounded-[38px] bg-white px-5 py-16 sm:px-8 lg:px-12 lg:py-20">
+      <section id="features" className="mx-auto max-w-[1500px] px-2 py-2 sm:px-5 sm:py-3">
+        <div className="rounded-[30px] bg-white px-4 py-12 sm:rounded-[38px] sm:px-8 lg:px-12 lg:py-20">
           <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
             <div>
               <p className="text-base font-black text-[#315d63]">What PrymAgent Flow changes</p>
-              <h2 className="mt-4 max-w-3xl text-[clamp(2.5rem,5.2vw,4.8rem)] font-black leading-[0.9]">
+              <h2 className="mt-4 max-w-3xl text-[clamp(2.2rem,9vw,4.8rem)] font-black leading-[0.92]">
                 Billing work becomes easier to see, approve, and complete.
               </h2>
               <p className="mt-6 max-w-xl text-lg leading-8 text-[#5f636d]">
@@ -992,13 +997,13 @@ function TeamsContent() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-[1500px] px-3 py-3 sm:px-5">
-        <div className="rounded-[38px] bg-[#1b0015] px-5 py-16 text-white sm:px-8 lg:px-12 lg:py-24">
+      <section className="mx-auto max-w-[1500px] px-2 py-2 sm:px-5 sm:py-3">
+        <div className="rounded-[30px] bg-[#1b0015] px-4 py-12 text-white sm:rounded-[38px] sm:px-8 lg:px-12 lg:py-24">
           <div className="mx-auto max-w-7xl">
             <div className="mb-10 flex flex-col justify-between gap-5 lg:flex-row lg:items-end">
               <div>
                 <p className="text-base font-black text-[#b9ff66]">Build only what your company needs</p>
-                <h2 className="mt-4 max-w-4xl text-[clamp(2.5rem,5.2vw,4.8rem)] font-black leading-[0.9]">
+                <h2 className="mt-4 max-w-4xl text-[clamp(2.2rem,9vw,4.8rem)] font-black leading-[0.92]">
                   Pick the workflow your team actually uses.
                 </h2>
               </div>
@@ -1011,7 +1016,7 @@ function TeamsContent() {
               <div className="grid gap-4 lg:grid-cols-[0.85fr_1.15fr]">
                 <div>
                   <p className="text-base font-black text-[#315d63]">Base Workspace</p>
-                  <h3 className="mt-4 text-5xl font-black">₦20,000/month</h3>
+                  <h3 className="mt-4 text-4xl font-black sm:text-5xl">₦20,000/month</h3>
                   <p className="mt-4 text-[#5f636d]">Includes up to 5 users. Extra users: ₦1,000/user/month.</p>
                 </div>
                 <FeatureList
@@ -1036,10 +1041,10 @@ function TeamsContent() {
         </div>
       </section>
 
-      <section id="pricing" className="mx-auto max-w-7xl px-5 py-16 sm:px-8 lg:py-24">
+      <section id="pricing" className="mx-auto max-w-7xl px-4 py-12 sm:px-8 lg:py-24">
         <div className="mb-10">
           <p className="text-base font-black text-[#315d63]">Workflow packs</p>
-          <h2 className="mt-4 max-w-4xl text-[clamp(2.5rem,5.2vw,4.8rem)] font-black leading-[0.9]">
+          <h2 className="mt-4 max-w-4xl text-[clamp(2.2rem,9vw,4.8rem)] font-black leading-[0.92]">
             Add the billing engine your company needs.
           </h2>
         </div>
@@ -1048,7 +1053,7 @@ function TeamsContent() {
           {workflowPacks.map((pack) => (
             <article key={pack.title} className={`${pack.accent} rounded-[30px] p-6`}>
               <p className="text-base font-black text-[#315d63]">{pack.price}</p>
-              <h3 className="mt-3 text-4xl font-black leading-none">{pack.title}</h3>
+              <h3 className="mt-3 text-3xl font-black leading-none sm:text-4xl">{pack.title}</h3>
               <p className="mt-4 text-[#4f545d]">{pack.copy}</p>
               <FeatureList items={pack.items} />
               <p className="mt-5 rounded-[20px] bg-white/75 p-4 text-sm font-bold leading-6">Flow: {pack.flow}</p>
@@ -1058,12 +1063,12 @@ function TeamsContent() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-[1500px] px-3 py-3 sm:px-5">
-        <div className="rounded-[38px] bg-[#e9f1f2] px-5 py-16 sm:px-8 lg:px-12 lg:py-24">
+      <section className="mx-auto max-w-[1500px] px-2 py-2 sm:px-5 sm:py-3">
+        <div className="rounded-[30px] bg-[#e9f1f2] px-4 py-12 sm:rounded-[38px] sm:px-8 lg:px-12 lg:py-24">
           <div className="mx-auto max-w-7xl">
             <div className="mb-10">
               <p className="text-base font-black text-[#315d63]">Add-ons and setup</p>
-              <h2 className="mt-4 max-w-4xl text-[clamp(2.5rem,5.2vw,4.8rem)] font-black leading-[0.9]">
+              <h2 className="mt-4 max-w-4xl text-[clamp(2.2rem,9vw,4.8rem)] font-black leading-[0.92]">
                 Extend the workflow without bloating the software.
               </h2>
             </div>
@@ -1089,10 +1094,10 @@ function TeamsContent() {
         </div>
       </section>
 
-      <section id="packages" className="mx-auto max-w-7xl px-5 py-16 sm:px-8 lg:py-24">
+      <section id="packages" className="mx-auto max-w-7xl px-4 py-12 sm:px-8 lg:py-24">
         <div className="mb-10">
           <p className="text-base font-black text-[#315d63]">Example packages</p>
-          <h2 className="mt-4 max-w-4xl text-[clamp(2.5rem,5.2vw,4.8rem)] font-black leading-[0.9]">
+          <h2 className="mt-4 max-w-4xl text-[clamp(2.2rem,9vw,4.8rem)] font-black leading-[0.92]">
             Choose a starting point, then tailor it.
           </h2>
         </div>
@@ -1101,19 +1106,19 @@ function TeamsContent() {
           {examplePackages.map(([name, price, description]) => (
             <article key={name} className="rounded-[30px] bg-white p-6 shadow-sm">
               <p className="text-base font-black text-[#315d63]">{price}</p>
-              <h3 className="mt-3 text-4xl font-black leading-none">{name}</h3>
+              <h3 className="mt-3 text-3xl font-black leading-none sm:text-4xl">{name}</h3>
               <p className="mt-4 text-[#5f636d]">{description}</p>
             </article>
           ))}
         </div>
       </section>
 
-      <section id="how" className="mx-auto max-w-[1500px] px-3 py-3 sm:px-5">
-        <div className="rounded-[38px] bg-[#f3ece8] px-5 py-16 sm:px-8 lg:px-12 lg:py-24">
+      <section id="how" className="mx-auto max-w-[1500px] px-2 py-2 sm:px-5 sm:py-3">
+        <div className="rounded-[30px] bg-[#f3ece8] px-4 py-12 sm:rounded-[38px] sm:px-8 lg:px-12 lg:py-24">
           <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[1fr_0.95fr] lg:items-start">
             <div>
               <p className="text-base font-black text-[#8a563f]">How onboarding works</p>
-              <h2 className="mt-4 max-w-4xl text-[clamp(2.5rem,5.2vw,4.8rem)] font-black leading-[0.9]">
+              <h2 className="mt-4 max-w-4xl text-[clamp(2.2rem,9vw,4.8rem)] font-black leading-[0.92]">
                 From scattered process to clear workflow.
               </h2>
               <p className="mt-6 max-w-xl text-lg leading-8 text-[#5f636d]">
@@ -1129,11 +1134,12 @@ function TeamsContent() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-5 py-16 sm:px-8 lg:py-24">
+      <section className="mx-auto max-w-7xl px-4 py-12 sm:px-8 lg:py-24">
         <div className="rounded-[30px] bg-white p-6">
-          <p className="text-base font-black text-[#315d63]">Compliance note</p>
+          <p className="text-base font-black text-[#315d63]">Compliance-ready, with more coming</p>
           <p className="mt-3 text-lg leading-8 text-[#5f636d]">
-            Live FIRS/NRS submission will only be available when the required integration and compliance pathway is complete.
+            PrymAgent helps you keep structured invoice data, VAT/TIN fields, tax exports, and audit-ready records today.
+            Direct FIRS/NRS submission is on our roadmap as the required integrations and compliance pathways become available.
           </p>
         </div>
       </section>
@@ -1145,11 +1151,11 @@ function TeamsContent() {
 
 function FinalSection({ setActiveMode }: { setActiveMode: (mode: Mode) => void }) {
   return (
-    <section className="mx-auto max-w-[1500px] px-3 pb-3 sm:px-5 sm:pb-5">
-      <div className="rounded-[38px] bg-[#090c13] px-5 py-16 text-center text-white sm:px-8 lg:py-24">
+    <section className="mx-auto max-w-[1500px] px-2 pb-2 sm:px-5 sm:pb-5">
+      <div className="rounded-[30px] bg-[#090c13] px-4 py-12 text-center text-white sm:rounded-[38px] sm:px-8 lg:py-24">
         <div className="mx-auto max-w-5xl">
           <p className="text-base font-black text-[#b9ff66]">One product. Two ways to work.</p>
-          <h2 className="mt-4 text-[clamp(2.8rem,6vw,5.6rem)] font-black leading-[0.9]">
+          <h2 className="mt-4 text-[clamp(2.3rem,10vw,5.6rem)] font-black leading-[0.92]">
             Build only the billing workflow you need.
           </h2>
           <p className="mx-auto mt-7 max-w-3xl text-lg leading-8 text-white/72">
@@ -1184,13 +1190,13 @@ function FinalSection({ setActiveMode }: { setActiveMode: (mode: Mode) => void }
 
 function FaqSection() {
   return (
-    <section id="faq" className="mx-auto max-w-[1500px] px-3 py-3 sm:px-5">
-      <div className="rounded-[38px] bg-[#f0f3eb] px-5 py-16 sm:px-8 lg:px-12 lg:py-24">
+    <section id="faq" className="mx-auto max-w-[1500px] px-2 py-2 sm:px-5 sm:py-3">
+      <div className="rounded-[30px] bg-[#f0f3eb] px-4 py-12 sm:rounded-[38px] sm:px-8 lg:px-12 lg:py-24">
         <div className="mx-auto max-w-7xl">
           <div className="mb-10 grid gap-6 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
             <div>
               <p className="text-base font-black text-[#557a2d]">FAQ</p>
-              <h2 className="mt-4 text-[clamp(2.5rem,5.2vw,4.8rem)] font-black leading-[0.9]">
+              <h2 className="mt-4 text-[clamp(2.2rem,9vw,4.8rem)] font-black leading-[0.92]">
                 Questions people ask before choosing PrymAgent.
               </h2>
             </div>
@@ -1207,7 +1213,7 @@ function FaqSection() {
                 open={index < 2}
                 className="group self-start rounded-[26px] bg-white p-5 shadow-sm"
               >
-                <summary className="flex cursor-pointer list-none items-start justify-between gap-4 text-xl font-black leading-tight">
+                <summary className="flex cursor-pointer list-none items-start justify-between gap-4 text-lg font-black leading-tight sm:text-xl">
                   {faq.question}
                   <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#090c13] text-sm text-white transition group-open:rotate-45">
                     +
@@ -1231,8 +1237,8 @@ function FaqSection() {
 
 function SiteFooter({ setActiveMode }: { setActiveMode: (mode: Mode) => void }) {
   return (
-    <footer className="bg-[#f8f8f8] px-5 py-10 sm:px-8">
-      <div className="mx-auto max-w-7xl rounded-[34px] bg-white p-6 shadow-sm sm:p-8">
+    <footer className="bg-white px-4 py-10 sm:px-8">
+      <div className="mx-auto max-w-7xl">
         <div className="grid gap-10 lg:grid-cols-[1.15fr_0.85fr_0.85fr_0.85fr]">
           <div>
             <div className="flex items-center gap-2">
@@ -1345,9 +1351,9 @@ function PricingPanel({ title, rows }: { title: string; rows: string[][] }) {
       <h3 className="text-2xl font-black">{title}</h3>
       <div className="mt-5 overflow-hidden rounded-[22px] border border-[#e8e8e8]">
         {rows.map(([label, value]) => (
-          <div key={label} className="grid grid-cols-[1fr_auto] gap-4 border-b border-[#e8e8e8] px-5 py-4 last:border-b-0">
-            <span className="font-bold text-[#4f545d]">{label}</span>
-            <span className="font-black text-[#090c13]">{value}</span>
+          <div key={label} className="grid grid-cols-[minmax(0,1fr)_auto] gap-3 border-b border-[#e8e8e8] px-4 py-4 last:border-b-0 sm:gap-4 sm:px-5">
+            <span className="min-w-0 break-words font-bold text-[#4f545d]">{label}</span>
+            <span className="whitespace-nowrap text-right font-black text-[#090c13]">{value}</span>
           </div>
         ))}
       </div>
@@ -1370,10 +1376,10 @@ function FeatureList({ items, dark = false, compact = false }: { items: string[]
 
 function BestForSection({ items, title, team = false }: { items: string[]; title: string; team?: boolean }) {
   return (
-    <section className="mx-auto max-w-7xl px-5 py-16 sm:px-8 lg:py-24">
-      <div className={`rounded-[34px] p-6 sm:p-8 ${team ? "bg-[#dfeaec]" : "bg-[#f0f3eb]"}`}>
+    <section className="mx-auto max-w-7xl px-4 py-12 sm:px-8 lg:py-24">
+      <div className={`rounded-[28px] p-5 sm:rounded-[34px] sm:p-8 ${team ? "bg-[#dfeaec]" : "bg-[#f0f3eb]"}`}>
         <p className={`text-base font-black ${team ? "text-[#315d63]" : "text-[#557a2d]"}`}>Best for</p>
-        <h2 className="mt-4 text-[clamp(2.4rem,4.8vw,4.8rem)] font-black leading-[0.9]">{title}</h2>
+        <h2 className="mt-4 text-[clamp(2.15rem,8.5vw,4.8rem)] font-black leading-[0.92]">{title}</h2>
         <div className="mt-8 flex flex-wrap gap-3">
           {items.map((item) => (
             <span key={item} className="rounded-full bg-white px-5 py-3 text-sm font-black">
