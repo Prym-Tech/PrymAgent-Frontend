@@ -33,33 +33,39 @@
 }
 
 :root {
-  /* Hex: #1A1A1A (The Main Text Black) */
-  --foreground: oklch(0.205 0 0);
-  --background: oklch(1 0 0);
+  --foreground: #101820;
+  --background: #f7faf0;
 
-  /* Brand Colors */
-  /* Primary Green: #2E7246 */
-  --primary: oklch(0.44 0.08 155.6);
-  --primary-foreground: oklch(0.98 0.01 155.6);
-  /* Near white for contrast */
+  --prymagent-prym-black: #010e09;
+  --prymagent-agent-ink: #101820;
+  --prymagent-ledger-navy: #161d25;
+  --prymagent-agent-lime: #b0d226;
+  --prymagent-dynamic-green: #00d37f;
+  --prymagent-approval-amber: #ffb85c;
+  --prymagent-solo-coral: #f84f94;
+  --prymagent-flow-cyan: #48d7ff;
+  --prymagent-paper: #f7faf0;
+  --prymagent-warm-gray: #e6ebdd;
+  --prymagent-mid-gray: #d2d8c7;
+  --prymagent-muted-text: #7f8c82;
 
-  /* Secondary/Accent Yellow: #FABB14 */
-  --brand-yellow: oklch(0.81 0.19 83.5);
-  --secondary: oklch(0.81 0.19 83.5);
-  --secondary-foreground: oklch(0.205 0 0);
-  /* Text black on yellow */
+  --primary: #b0d226;
+  --primary-foreground: #101820;
 
-  --brand-green: oklch(0.44 0.08 155.6);
+  --brand-yellow: #ffb85c;
+  --secondary: #00d37f;
+  --secondary-foreground: #101820;
 
-  /* UI Neutrals */
-  --muted: oklch(0.96 0.01 155.6);
-  --muted-foreground: oklch(0.45 0.02 155.6);
-  --accent: oklch(0.92 0.03 155.6);
-  --accent-foreground: oklch(0.44 0.08 155.6);
+  --brand-green: #b0d226;
 
-  --border: oklch(0.92 0 0);
-  --input: oklch(0.92 0 0);
-  --ring: oklch(0.44 0.08 155.6);
+  --muted: #e6ebdd;
+  --muted-foreground: #7f8c82;
+  --accent: #48d7ff;
+  --accent-foreground: #101820;
+
+  --border: #d2d8c7;
+  --input: #d2d8c7;
+  --ring: #b0d226;
 
   --radius: 0.625rem;
 }

@@ -26,8 +26,184 @@ const WHATSAPP_NUMBER = "2349032879124"
 const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}?text=Hi!%20I%27d%20like%20to%20get%20started%20with%20PrymAgent`
 const TEAM_DEMO_URL = "mailto:hello@prymtech.xyz?subject=PrymAgent%20Flow%20demo"
 const DEMO_VIDEO_URL = "https://www.youtube.com/embed/IjBJ_sn0bCQ?autoplay=1"
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api"
 
 type Mode = "providers" | "teams"
+
+type LandingConfig = {
+  currency?: {
+    symbol?: string
+    name?: string
+  }
+  features?: {
+    payment_links_enabled?: boolean
+    report_exports_enabled?: boolean
+    watermark_enabled?: boolean
+    paystack_enabled?: boolean
+  }
+  credit_bundles?: {
+    name: string
+    credits: number
+    price: number
+  }[]
+  action_pricing?: {
+    action_code: string
+    display_name: string
+    credit_cost: number
+    is_free: boolean
+  }[]
+  free_trial?: {
+    is_active: boolean
+    free_quotes: number
+    free_invoices: number
+    free_receipts: number
+    free_client_records: number
+    free_payment_tracking_enabled: boolean
+  }
+  pro_plan?: {
+    is_active: boolean
+    monthly_price: number
+    unlimited_reasonable_usage: boolean
+    description?: string
+  }
+  custom_template_setup?: {
+    is_active: boolean
+    min_price: number
+    max_price: number
+    description?: string
+  }
+}
+
+const FALLBACK_CREDIT_BUNDLES = [
+  { name: "Starter", credits: 10, price: 1500 },
+  { name: "Growth", credits: 25, price: 3000 },
+  { name: "Business", credits: 60, price: 6000 },
+]
+
+const FALLBACK_ACTION_PRICING = [
+  { action_code: "CREATE_QUOTE", display_name: "Generate branded quote", credit_cost: 2, is_free: false },
+  { action_code: "CREATE_INVOICE", display_name: "Generate branded invoice", credit_cost: 3, is_free: false },
+  { action_code: "CREATE_RECEIPT", display_name: "Generate receipt", credit_cost: 1, is_free: false },
+  { action_code: "EXPORT_ANNUAL_REPORT", display_name: "Export annual PDF report", credit_cost: 5, is_free: false },
+  { action_code: "ADD_OR_UPDATE_CLIENT", display_name: "Add or update client profile", credit_cost: 0, is_free: true },
+  { action_code: "MARK_INVOICE_STATUS", display_name: "Mark invoice paid/unpaid", credit_cost: 0, is_free: true },
+  { action_code: "VIEW_EARNINGS_SUMMARY", display_name: "View earnings summary", credit_cost: 0, is_free: true },
+  { action_code: "LOG_PAYMENT_STATUS", display_name: "Log payment status", credit_cost: 0, is_free: true },
+]
+
+const FALLBACK_FREE_TRIAL = {
+  is_active: true,
+  free_quotes: 1,
+  free_invoices: 1,
+  free_receipts: 1,
+  free_client_records: 1,
+  free_payment_tracking_enabled: true,
+}
+
+function formatMoney(amount: number, currency = "NGN") {
+  const prefix = currency === "NGN" ? "₦" : `${currency} `
+  return `${prefix}${Number(amount || 0).toLocaleString("en-NG", { maximumFractionDigits: 0 })}`
+}
+
+function pluralizeCredits(count: number) {
+  return `${count} credit${count === 1 ? "" : "s"}`
+}
+
+function getCurrency(config: LandingConfig | null) {
+  return config?.currency?.symbol || "NGN"
+}
+
+function getCreditBundleRows(config: LandingConfig | null) {
+  const currency = getCurrency(config)
+  const bundles = config?.credit_bundles?.length ? config.credit_bundles : FALLBACK_CREDIT_BUNDLES
+  return bundles.map((bundle) => [
+    `${bundle.name} (${pluralizeCredits(bundle.credits)})`,
+    formatMoney(bundle.price, currency),
+  ])
+}
+
+function getActionPricingRows(config: LandingConfig | null) {
+  const actionOrder = [
+    "CREATE_QUOTE",
+    "CREATE_INVOICE",
+    "CREATE_RECEIPT",
+    "EXPORT_ANNUAL_REPORT",
+    "ADD_OR_UPDATE_CLIENT",
+    "MARK_INVOICE_STATUS",
+    "VIEW_EARNINGS_SUMMARY",
+    "LOG_PAYMENT_STATUS",
+  ]
+  const pricing = config?.action_pricing?.length ? config.action_pricing : FALLBACK_ACTION_PRICING
+  return [...pricing]
+    .sort((a, b) => actionOrder.indexOf(a.action_code) - actionOrder.indexOf(b.action_code))
+    .filter((item) => actionOrder.includes(item.action_code))
+    .map((item) => [
+      item.display_name,
+      item.is_free || item.credit_cost === 0 ? "Free" : pluralizeCredits(item.credit_cost),
+    ])
+}
+
+function getFreeTrialCopy(config: LandingConfig | null) {
+  const trial = config?.free_trial || FALLBACK_FREE_TRIAL
+  if (!trial.is_active) {
+    return "Free trial availability is set by PrymAgent admin. You can still start on WhatsApp and see the current offer."
+  }
+
+  const parts = [
+    `${trial.free_quotes} quote${trial.free_quotes === 1 ? "" : "s"}`,
+    `${trial.free_invoices} invoice${trial.free_invoices === 1 ? "" : "s"}`,
+    `${trial.free_receipts} receipt${trial.free_receipts === 1 ? "" : "s"}`,
+    `${trial.free_client_records} client record${trial.free_client_records === 1 ? "" : "s"}`,
+  ]
+
+  if (trial.free_payment_tracking_enabled) {
+    parts.push("payment status tracking")
+  }
+
+  return `Start with ${parts.join(", ")} before buying credits.`
+}
+
+function getProPrice(config: LandingConfig | null) {
+  return `${formatMoney(config?.pro_plan?.monthly_price ?? 4000, getCurrency(config))}/month`
+}
+
+function getTemplateSetupPrice(config: LandingConfig | null) {
+  const template = config?.custom_template_setup
+  return `${formatMoney(template?.min_price ?? 5000, getCurrency(config))}-${formatMoney(template?.max_price ?? 20000, getCurrency(config))}`
+}
+
+function getFaqs(config: LandingConfig | null) {
+  const bundles = getCreditBundleRows(config)
+    .map(([label, price]) => `${label} for ${price}`)
+    .join(", ")
+  const quoteCost = getActionPricingRows(config).find(([label]) => label.toLowerCase().includes("quote"))?.[1]
+  const invoiceCost = getActionPricingRows(config).find(([label]) => label.toLowerCase().includes("invoice"))?.[1]
+  const receiptCost = getActionPricingRows(config).find(([label]) => label.toLowerCase().includes("receipt"))?.[1]
+
+  return faqs.map((faq) => {
+    if (faq.question === "How much does PrymAgent Solo cost?") {
+      return {
+        ...faq,
+        answer: [
+          `Current credit bundles: ${bundles}.`,
+          `Current usage: quotes cost ${quoteCost || "the configured credit cost"}, invoices cost ${invoiceCost || "the configured credit cost"}, and receipts cost ${receiptCost || "the configured credit cost"}. Free actions and trial allowances are controlled from the PrymAgent admin backend.`,
+        ],
+      }
+    }
+
+    if (faq.question === "Is there a free trial?") {
+      return {
+        ...faq,
+        answer: [
+          `For service providers, the current trial rule is: ${getFreeTrialCopy(config)}`,
+          "For teams, setup depends on the workflow required. A demo or guided setup can be provided before activation.",
+        ],
+      }
+    }
+
+    return faq
+  })
+}
 
 const providerCanDo = [
   "Send professional quotes",
@@ -42,6 +218,7 @@ const providerCanDo = [
 const providerFeatures = [
   {
     icon: FileText,
+    asset: "quote",
     title: "Generate professional quotes",
     copy:
       "Create clean quotes or proforma invoices before a client pays. Useful for project pricing, service packages, retainers, deposits, and milestones.",
@@ -50,6 +227,7 @@ const providerFeatures = [
   },
   {
     icon: ClipboardList,
+    asset: "invoice",
     title: "Generate branded invoices",
     copy:
       "Create PDF invoices with your business name, logo, brand color, client details, invoice number, service description, due date, bank details, and optional payment link.",
@@ -57,6 +235,7 @@ const providerFeatures = [
   },
   {
     icon: Receipt,
+    asset: "receipt",
     title: "Generate payment receipts",
     copy:
       "Once a client pays, generate a receipt with client name, amount paid, payment date, payment method, invoice reference, and your branding.",
@@ -64,6 +243,7 @@ const providerFeatures = [
   },
   {
     icon: WalletCards,
+    asset: "payment",
     title: "Track payment status",
     copy:
       "Mark invoices as unpaid, paid, part-paid, or overdue so you know who has paid and who still owes you.",
@@ -71,6 +251,7 @@ const providerFeatures = [
   },
   {
     icon: UsersRound,
+    asset: "client",
     title: "Keep client records",
     copy:
       "Check quotes sent, invoices issued, receipts generated, total paid, and outstanding balances for each client.",
@@ -78,6 +259,7 @@ const providerFeatures = [
   },
   {
     icon: BarChart3,
+    asset: "flow",
     title: "Ask earnings questions",
     copy:
       "Ask who still owes you, how much you made this month, unpaid invoices, or how much a specific client paid this year.",
@@ -91,23 +273,6 @@ const providerSteps = [
   "Your quote, invoice, or receipt is generated.",
   "Share the PDF by WhatsApp, email, or download.",
   "Track the payment as paid, unpaid, part-paid, or overdue.",
-]
-
-const providerBundles = [
-  ["10 credits", "₦1,500"],
-  ["25 credits", "₦3,000"],
-  ["60 credits", "₦6,000"],
-]
-
-const providerCreditUsage = [
-  ["Generate branded quote", "2 credits"],
-  ["Generate branded invoice", "3 credits"],
-  ["Generate receipt", "1 credit"],
-  ["Export annual PDF report", "5 credits"],
-  ["Add or update client profile", "Free"],
-  ["Mark invoice paid/unpaid", "Free"],
-  ["View earnings summary", "Free"],
-  ["Log payment status", "Free"],
 ]
 
 const providerBestFor = [
@@ -141,30 +306,35 @@ const teamCapabilities = [
 const teamBenefits = [
   {
     icon: UsersRound,
+    asset: "client",
     title: "One shared billing source",
     copy:
       "Sales, finance, managers, and operations can work from the same client, invoice, receipt, and payment history instead of scattered chats.",
   },
   {
     icon: UserCheck,
+    asset: "approval",
     title: "Approvals before documents go out",
     copy:
       "Teams can route quotes, invoices, discounts, and payment terms for review before clients receive final documents.",
   },
   {
     icon: WalletCards,
+    asset: "payment",
     title: "Payment visibility for everyone",
     copy:
       "See what is pending, paid, overdue, or waiting for a receipt without asking three people for status updates.",
   },
   {
     icon: BarChart3,
+    asset: "tax",
     title: "Cleaner records for reporting",
     copy:
       "Keep billing documents, client activity, vendor bills, and audit trails organized for management, tax, and finance reviews.",
   },
   {
     icon: FileWarning,
+    asset: "flow",
     title: "AI catches the admin gaps",
     copy:
       "PrymAgent helps detect missing billing details, extract document data, summarize unpaid invoices, and reduce repetitive formatting.",
@@ -423,8 +593,8 @@ const faqs = [
   {
     question: "How much does PrymAgent Solo cost?",
     answer: [
-      "Service providers can use credit bundles: 10 credits for ₦1,500, 25 credits for ₦3,000, or 60 credits for ₦6,000.",
-      "Credit usage starts at 2 credits for branded quotes, 3 credits for branded invoices, 1 credit for receipts, and 5 credits for annual PDF reports. Client profile updates, payment status logs, and earnings summaries are free.",
+      "Service providers can use credit bundles configured by PrymAgent admin.",
+      "Credit usage and free actions are also controlled from the backend, so the page shows the current active settings when available.",
     ],
   },
   {
@@ -455,6 +625,7 @@ export default function Home() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
   const [activeMode, setActiveMode] = useState<Mode>("providers")
+  const [landingConfig, setLandingConfig] = useState<LandingConfig | null>(null)
   const isTeams = activeMode === "teams"
 
   useEffect(() => {
@@ -465,16 +636,48 @@ export default function Home() {
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
+  useEffect(() => {
+    let isMounted = true
+
+    async function loadLandingConfig() {
+      try {
+        const response = await fetch(`${API_BASE_URL}/public/landing-config`, {
+          headers: { Accept: "application/json" },
+        })
+        if (!response.ok) return
+        const data = (await response.json()) as LandingConfig
+        if (isMounted) setLandingConfig(data)
+      } catch {
+        // Keep the static fallbacks if the backend is unavailable.
+      }
+    }
+
+    loadLandingConfig()
+
+    return () => {
+      isMounted = false
+    }
+  }, [])
+
   return (
-    <main className={`min-h-screen ${isTeams ? "bg-[#eef3f4]" : "bg-[#f8f8f8]"} text-[#090c13]`}>
-      <section id="top" className="relative min-h-screen overflow-hidden bg-[#1b0015] text-white">
+    <main className={`min-h-screen ${isTeams ? "bg-[#eaf6f8]" : "bg-[#f7faf0]"} text-[#101820]`}>
+      <section
+        id="top"
+        className="relative min-h-screen overflow-hidden bg-[#101820] text-white"
+        style={{
+          backgroundImage:
+            "radial-gradient(circle at 20% 10%, rgba(176, 210, 38, 0.18), transparent 28rem), radial-gradient(circle at 82% 18%, rgba(72, 215, 255, 0.14), transparent 28rem), url('/assets/prymagent/patterns/agent-flow-pattern.png')",
+          backgroundSize: "auto, auto, 640px",
+          backgroundPosition: "center, center, center",
+        }}
+      >
         <header
           className={`${
             isScrolled ? "fixed left-0 right-0 top-0 z-50 py-3" : "relative z-30 py-4"
           } px-4 transition-all duration-500 ease-out sm:px-6 lg:px-8`}
         >
           <div
-            className={`mx-auto flex items-center justify-between gap-4 rounded-full border bg-white/94 px-3 text-[#090c13] backdrop-blur-xl transition-all duration-500 ease-out ${
+            className={`mx-auto flex items-center justify-between gap-4 rounded-full border bg-[#f7faf0]/96 px-3 text-[#101820] backdrop-blur-xl transition-all duration-500 ease-out ${
               isScrolled
                 ? "max-w-6xl border-black/10 py-1.5 shadow-2xl shadow-black/18"
                 : "max-w-7xl border-white/12 py-2 shadow-2xl shadow-black/20"
@@ -482,17 +685,16 @@ export default function Home() {
           >
             <a href="#top" className="flex items-center gap-2 rounded-full px-2 py-1">
               <Image
-                src="/assets/icons/logohead.png"
+                src="/assets/prymagent/logos/prymagent-lockup.png"
                 alt="PrymAgent logo"
-                width={34}
-                height={34}
-                className="h-8 w-8"
+                width={156}
+                height={40}
+                className="h-9 w-auto"
                 priority
               />
-              <span className="text-lg font-black">PrymAgent</span>
             </a>
 
-            <nav className="hidden items-center gap-1 rounded-full bg-[#f4f5f1] p-1 text-sm font-bold text-[#090c13] lg:flex">
+            <nav className="hidden items-center gap-1 rounded-full bg-[#e6ebdd] p-1 text-sm font-bold text-[#101820] lg:flex">
               <a
                 href="#top"
                 onClick={() => setActiveMode("providers")}
@@ -534,7 +736,7 @@ export default function Home() {
                 href={isTeams ? TEAM_DEMO_URL : WHATSAPP_URL}
                 target={isTeams ? undefined : "_blank"}
                 rel={isTeams ? undefined : "noopener noreferrer"}
-                className="rounded-full bg-[#090c13] px-5 py-3 text-sm font-black text-white transition hover:bg-[#2b2f37]"
+              className="rounded-full bg-[#101820] px-5 py-3 text-sm font-black text-white transition hover:bg-[#161d25]"
               >
                 {isTeams ? "Book demo" : "Start on WhatsApp"}
               </a>
@@ -543,7 +745,7 @@ export default function Home() {
             <button
               type="button"
               onClick={() => setIsMenuOpen((open) => !open)}
-              className="flex h-11 w-11 items-center justify-center rounded-full bg-[#090c13] text-white lg:hidden"
+              className="flex h-11 w-11 items-center justify-center rounded-full bg-[#101820] text-white lg:hidden"
               aria-label="Toggle navigation menu"
               aria-expanded={isMenuOpen}
             >
@@ -552,7 +754,7 @@ export default function Home() {
           </div>
 
           {isMenuOpen && (
-            <div className="mx-auto mt-3 max-w-7xl rounded-[28px] border border-white/12 bg-white p-3 text-[#090c13] shadow-2xl shadow-black/20 lg:hidden">
+            <div className="mx-auto mt-3 max-w-7xl rounded-[28px] border border-white/12 bg-[#f7faf0] p-3 text-[#101820] shadow-2xl shadow-black/20 lg:hidden">
               <nav className="grid gap-1 text-base font-black">
                 <a
                   href="#top"
@@ -592,7 +794,7 @@ export default function Home() {
                     setIsMenuOpen(false)
                     setIsDemoOpen(true)
                   }}
-                  className="rounded-[20px] bg-[#f0f3eb] px-5 py-4 text-left font-black"
+                  className="rounded-[20px] bg-[#e6ebdd] px-5 py-4 text-left font-black"
                 >
                   Watch demo
                 </button>
@@ -601,7 +803,7 @@ export default function Home() {
                   target={isTeams ? undefined : "_blank"}
                   rel={isTeams ? undefined : "noopener noreferrer"}
                   onClick={() => setIsMenuOpen(false)}
-                  className="rounded-[20px] bg-[#b9ff66] px-5 py-4 font-black"
+                  className="rounded-[20px] bg-[#b0d226] px-5 py-4 font-black"
                 >
                   {isTeams ? "Book demo" : "Start on WhatsApp"}
                 </a>
@@ -614,7 +816,15 @@ export default function Home() {
         <div className="relative z-10 flex min-h-[calc(100vh-92px)] flex-col justify-center px-5 pb-8 pt-8 sm:px-8 lg:px-10 lg:pb-8 lg:pt-10">
           <div className="mx-auto w-full max-w-7xl">
             <div className="mx-auto max-w-6xl text-center">
-              <h1 className="text-[clamp(2.45rem,10vw,5.9rem)] font-black leading-[0.92] text-white">
+              <Image
+                src="/assets/prymagent/logos/prymagent-lockup-reverse.png"
+                alt="PrymAgent"
+                width={230}
+                height={64}
+                className="mx-auto mb-7 h-auto w-44 sm:w-56"
+                priority
+              />
+              <h1 className="text-[clamp(2.45rem,10vw,5.45rem)] font-black leading-[0.92] text-white">
                 Business billing, payments, and records made simple with AI.
               </h1>
 
@@ -622,8 +832,8 @@ export default function Home() {
                 Create quotes, invoices, receipts, track payments, and manage billing workflows from WhatsApp and web — whether you work alone or with a team.
               </p>
 
-              <div className="mx-auto mt-7 max-w-3xl rounded-[26px] bg-white p-2 text-left shadow-2xl shadow-black/30">
-                <p className="px-3 pb-2 pt-1 text-center text-xs font-black text-[#7b7f88]">
+              <div className="mx-auto mt-7 max-w-3xl rounded-[26px] bg-[#f7faf0] p-2 text-left shadow-2xl shadow-black/30">
+                <p className="px-3 pb-2 pt-1 text-center text-xs font-black text-[#7f8c82]">
                   Choose the category that best fits you.
                 </p>
                 <div className="grid gap-2 sm:grid-cols-2">
@@ -647,14 +857,14 @@ export default function Home() {
                   href={isTeams ? TEAM_DEMO_URL : WHATSAPP_URL}
                   target={isTeams ? undefined : "_blank"}
                   rel={isTeams ? undefined : "noopener noreferrer"}
-                  className="inline-flex flex-1 items-center justify-center gap-2 rounded-[22px] bg-[#b9ff66] px-6 py-4 text-base font-black text-[#090c13] transition hover:bg-white"
+                  className="inline-flex flex-1 items-center justify-center gap-2 rounded-[22px] bg-[#b0d226] px-6 py-4 text-base font-black text-[#101820] transition hover:bg-white"
                 >
                   {isTeams ? "Book a workflow demo" : "Start on WhatsApp"}
                   <ArrowRight className="h-5 w-5" />
                 </a>
                 <a
                   href={isTeams ? "#packages" : "#pricing"}
-                  className="inline-flex flex-1 items-center justify-center gap-2 rounded-[22px] bg-white px-6 py-4 text-base font-black text-[#090c13] transition hover:bg-[#f0f3eb]"
+                  className="inline-flex flex-1 items-center justify-center gap-2 rounded-[22px] bg-white px-6 py-4 text-base font-black text-[#101820] transition hover:bg-[#f7faf0]"
                 >
                   {isTeams ? "Build your package" : "See pricing"}
                 </a>
@@ -664,14 +874,14 @@ export default function Home() {
             <div className="mt-8 grid gap-4 lg:grid-cols-[0.85fr_1.3fr_0.85fr] lg:items-end">
               <div className="rounded-[30px] bg-white/10 p-5 ring-1 ring-white/10">
                 <p className="text-sm font-semibold text-white/60">{isTeams ? "Team workflow" : "Natural message"}</p>
-                <p className="mt-3 rounded-[22px] bg-white p-4 text-xl font-black leading-snug text-[#090c13]">
+                <p className="mt-3 rounded-[22px] bg-[#f7faf0] p-4 text-xl font-black leading-snug text-[#101820]">
                   {isTeams
                     ? "Quote approved -> Invoice sent -> Payment tracked -> Receipt linked."
                     : "Create an invoice for Ada Ventures, branding project, ₦450,000."}
                 </p>
               </div>
 
-              <div className="relative overflow-hidden rounded-[34px] bg-[#f8f8f8] p-4 text-[#090c13] shadow-2xl shadow-black/35">
+              <div className="relative overflow-hidden rounded-[34px] bg-[#f7faf0] p-4 text-[#101820] shadow-2xl shadow-black/35">
                 <div className={`rounded-[26px] p-5 ${isTeams ? "bg-[#e9f1f2]" : "bg-white"}`}>
                   <div className="flex items-center justify-between gap-4 border-b border-[#dfe6e8] pb-5">
                     <div>
@@ -680,7 +890,7 @@ export default function Home() {
                         {isTeams ? "AI-assisted billing workflow." : "AI billing on WhatsApp."}
                       </h2>
                     </div>
-                    <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-[#1b0015] text-white">
+                    <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-[#161d25] text-white">
                       {isTeams ? <Building2 className="h-7 w-7" /> : <MessageCircle className="h-7 w-7" />}
                     </div>
                   </div>
@@ -694,7 +904,7 @@ export default function Home() {
                         key={signal}
                         className={`rounded-[22px] p-4 ${
                           index === 0
-                            ? "bg-[#b9ff66]"
+                            ? "bg-[#b0d226]"
                             : index === 1
                               ? "bg-[#f6eef5]"
                               : index === 2
@@ -710,8 +920,8 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="rounded-[30px] bg-white p-5 text-[#090c13]">
-                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-[#b9ff66]">
+              <div className="rounded-[30px] bg-white p-5 text-[#101820]">
+                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-[#b0d226]">
                   {isTeams ? <UsersRound className="h-7 w-7" /> : <FileText className="h-7 w-7" />}
                 </div>
                 <h2 className="mt-6 text-2xl font-black leading-none sm:text-3xl">
@@ -728,9 +938,9 @@ export default function Home() {
         </div>
       </section>
 
-      {isTeams ? <TeamsContent /> : <ProviderContent />}
+      {isTeams ? <TeamsContent /> : <ProviderContent config={landingConfig} />}
 
-      <FaqSection />
+      <FaqSection config={landingConfig} />
 
       <FinalSection setActiveMode={setActiveMode} />
 
@@ -738,20 +948,20 @@ export default function Home() {
 
       {isDemoOpen && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-[#090c13]/85 p-4 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-[#101820]/85 p-4 backdrop-blur-sm"
           role="dialog"
           aria-modal="true"
           aria-label="PrymAgent demo video"
           onClick={() => setIsDemoOpen(false)}
         >
           <div
-            className="relative w-full max-w-5xl overflow-hidden rounded-[30px] bg-[#090c13] p-3 shadow-2xl"
+            className="relative w-full max-w-5xl overflow-hidden rounded-[30px] bg-[#101820] p-3 shadow-2xl"
             onClick={(event) => event.stopPropagation()}
           >
             <button
               type="button"
               onClick={() => setIsDemoOpen(false)}
-              className="absolute right-5 top-5 z-10 flex h-11 w-11 items-center justify-center rounded-full bg-white text-[#090c13] shadow-lg transition hover:bg-[#b9ff66]"
+              className="absolute right-5 top-5 z-10 flex h-11 w-11 items-center justify-center rounded-full bg-white text-[#101820] shadow-lg transition hover:bg-[#b0d226]"
               aria-label="Close demo video"
             >
               <X className="h-5 w-5" />
@@ -788,7 +998,7 @@ function ModeTab({
       type="button"
       onClick={onClick}
       className={`rounded-[24px] p-5 transition ${
-        active ? "bg-[#090c13] text-white" : "bg-[#f4f5f1] text-[#090c13] hover:bg-[#e9f1f2]"
+        active ? "bg-[#101820] text-white" : "bg-[#e6ebdd] text-[#101820] hover:bg-[#d2d8c7]"
       }`}
     >
       <span className="block text-lg font-black">{title}</span>
@@ -799,7 +1009,11 @@ function ModeTab({
   )
 }
 
-function ProviderContent() {
+function ProviderContent({ config }: { config: LandingConfig | null }) {
+  const freeTrialCopy = getFreeTrialCopy(config)
+  const proPrice = getProPrice(config)
+  const templateSetupPrice = getTemplateSetupPrice(config)
+
   return (
     <>
       <section className="mx-auto max-w-7xl px-4 py-12 sm:px-8 lg:py-24">
@@ -821,6 +1035,23 @@ function ProviderContent() {
               {providerCanDo.map((point) => (
                 <div key={point} className="rounded-[22px] bg-white px-5 py-4 text-lg font-black">
                   {point}
+                </div>
+              ))}
+            </div>
+            <div className="mt-4 grid grid-cols-3 gap-3">
+              {[
+                ["Quote", "/assets/prymagent/templates/prymagent-quote-template.png"],
+                ["Invoice", "/assets/prymagent/templates/prymagent-invoice-template.png"],
+                ["Receipt", "/assets/prymagent/templates/prymagent-receipt-template.png"],
+              ].map(([label, src]) => (
+                <div key={label} className="overflow-hidden rounded-[18px] bg-white p-2 shadow-sm">
+                  <Image
+                    src={src}
+                    alt={`PrymAgent ${label.toLowerCase()} template preview`}
+                    width={260}
+                    height={340}
+                    className="h-auto w-full rounded-[12px]"
+                  />
                 </div>
               ))}
             </div>
@@ -846,13 +1077,19 @@ function ProviderContent() {
             <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
               {providerFeatures.map((item) => (
                 <article key={item.title} className={`${item.accent} rounded-[26px] p-4 sm:rounded-[30px] sm:p-6`}>
-                  <div className="mb-8 flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-[#090c13] text-white sm:mb-10">
-                    <item.icon className="h-7 w-7" />
+                  <div className="mb-8 flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-[#101820] sm:mb-10">
+                    <Image
+                      src={`/assets/prymagent/icons/${item.asset}.png`}
+                      alt=""
+                      width={34}
+                      height={34}
+                      className="h-8 w-8"
+                    />
                   </div>
                   <h3 className="text-2xl font-black leading-none sm:text-3xl">{item.title}</h3>
                   <p className="mt-5 text-base leading-7 text-[#4f545d]">{item.copy}</p>
                   {item.example && (
-                    <p className="mt-5 rounded-[20px] bg-white/75 p-4 text-sm font-bold leading-6 text-[#090c13]">
+                    <p className="mt-5 rounded-[20px] bg-white/75 p-4 text-sm font-bold leading-6 text-[#101820]">
                       Example: "{item.example}"
                     </p>
                   )}
@@ -865,8 +1102,8 @@ function ProviderContent() {
 
       <section id="how" className="mx-auto max-w-7xl px-4 py-12 sm:px-8 lg:py-24">
         <div className="grid gap-8 lg:grid-cols-[1fr_0.95fr] lg:items-stretch">
-          <div className="rounded-[30px] bg-[#1b0015] p-5 text-white sm:rounded-[36px] sm:p-8 lg:p-10">
-            <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-[#b9ff66] text-[#090c13]">
+          <div className="rounded-[30px] bg-[#161d25] p-5 text-white sm:rounded-[36px] sm:p-8 lg:p-10">
+            <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-[#b0d226] text-[#101820]">
               <MessageCircle className="h-8 w-8" />
             </div>
             <h2 className="mt-8 max-w-3xl text-[clamp(2.15rem,8.5vw,4.6rem)] font-black leading-[0.94] sm:mt-10">
@@ -875,7 +1112,7 @@ function ProviderContent() {
             <p className="mt-6 max-w-xl text-lg leading-8 text-white/72">
               Type naturally, and PrymAgent turns your request into a quote, invoice, receipt, or payment record.
             </p>
-            <div className="mt-10 rounded-[28px] bg-white p-4 text-[#090c13]">
+            <div className="mt-10 rounded-[28px] bg-white p-4 text-[#101820]">
               <p className="rounded-[22px] bg-[#f0f3eb] p-5 text-2xl font-black leading-tight">
                 Create an invoice for Ada Ventures, branding project, ₦450,000.
               </p>
@@ -908,34 +1145,34 @@ function ProviderContent() {
               </div>
 
               <div className="grid gap-4">
-                <div className="rounded-[30px] bg-[#1b0015] p-6 text-white shadow-xl shadow-[#1b0015]/10">
+                <div className="rounded-[30px] bg-[#161d25] p-6 text-white shadow-xl shadow-[#161d25]/10">
                   <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
                     <div>
-                      <p className="text-sm font-black text-[#b9ff66]">Free trial</p>
+                      <p className="text-sm font-black text-[#b0d226]">Free trial</p>
                       <h3 className="mt-3 text-3xl font-black leading-none sm:text-4xl">Your first billing workflow is free.</h3>
                       <p className="mt-4 max-w-xl text-sm leading-7 text-white/72">
-                        Create one quote, one invoice, one receipt, one client record, and track the payment status before buying credits.
+                        {freeTrialCopy}
                       </p>
                     </div>
                     <a
                       href={WHATSAPP_URL}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex shrink-0 items-center justify-center rounded-full bg-[#b9ff66] px-5 py-3 text-sm font-black text-[#090c13] transition hover:bg-white"
+                      className="inline-flex shrink-0 items-center justify-center rounded-full bg-[#b0d226] px-5 py-3 text-sm font-black text-[#101820] transition hover:bg-white"
                     >
                       Start free
                     </a>
                   </div>
                 </div>
-                <PricingPanel title="Credit bundles" rows={providerBundles} />
-                <PricingPanel title="Credit usage" rows={providerCreditUsage} />
+                <PricingPanel title="Credit bundles" rows={getCreditBundleRows(config)} />
+                <PricingPanel title="Credit usage" rows={getActionPricingRows(config)} />
               </div>
             </div>
 
             <div className="mt-6 grid gap-4 lg:grid-cols-2">
-              <div className="rounded-[30px] bg-[#1b0015] p-6 text-white">
-                <p className="text-base font-black text-[#b9ff66]">PrymAgent Pro</p>
-                <h3 className="mt-4 text-4xl font-black sm:text-5xl">₦4,000/month</h3>
+              <div className="rounded-[30px] bg-[#161d25] p-6 text-white">
+                <p className="text-base font-black text-[#b0d226]">PrymAgent Pro</p>
+                <h3 className="mt-4 text-4xl font-black sm:text-5xl">{proPrice}</h3>
                 <p className="mt-4 text-white/70">For active service providers.</p>
                 <FeatureList
                   dark
@@ -954,7 +1191,7 @@ function ProviderContent() {
 
               <div className="rounded-[30px] bg-white p-6">
                 <p className="text-base font-black text-[#557a2d]">Custom template setup</p>
-                <h3 className="mt-4 text-4xl font-black sm:text-5xl">₦5,000-₦20,000</h3>
+                <h3 className="mt-4 text-4xl font-black sm:text-5xl">{templateSetupPrice}</h3>
                 <p className="mt-4 text-[#5f636d]">One-time setup for documents that match your brand exactly.</p>
                 <FeatureList
                   items={[
@@ -1023,8 +1260,14 @@ function TeamsContent() {
             <div className="grid gap-4 sm:grid-cols-2">
               {teamBenefits.map((benefit) => (
                 <article key={benefit.title} className="rounded-[28px] bg-[#e9f1f2] p-5">
-                  <div className="mb-8 flex h-12 w-12 items-center justify-center rounded-full bg-[#1b0015] text-white">
-                    <benefit.icon className="h-6 w-6" />
+                  <div className="mb-8 flex h-12 w-12 items-center justify-center rounded-full bg-[#161d25]">
+                    <Image
+                      src={`/assets/prymagent/icons/${benefit.asset}.png`}
+                      alt=""
+                      width={30}
+                      height={30}
+                      className="h-7 w-7"
+                    />
                   </div>
                   <h3 className="text-2xl font-black leading-none">{benefit.title}</h3>
                   <p className="mt-4 text-sm leading-6 text-[#4f545d]">{benefit.copy}</p>
@@ -1057,7 +1300,7 @@ function TeamsContent() {
                 </div>
               ))}
             </div>
-            <p className="mt-4 rounded-[22px] bg-[#1b0015] px-5 py-4 text-sm font-bold leading-6 text-white">
+            <p className="mt-4 rounded-[22px] bg-[#161d25] px-5 py-4 text-sm font-bold leading-6 text-white">
               Instead of chasing updates across teams, PrymAgent Flow keeps quotes, approvals, invoices, payments,
               receipts, and reports moving through one shared path.
             </p>
@@ -1066,11 +1309,11 @@ function TeamsContent() {
       </section>
 
       <section className="mx-auto max-w-[1500px] px-2 py-2 sm:px-5 sm:py-3">
-        <div className="rounded-[30px] bg-[#1b0015] px-4 py-12 text-white sm:rounded-[38px] sm:px-8 lg:px-12 lg:py-24">
+        <div className="rounded-[30px] bg-[#161d25] px-4 py-12 text-white sm:rounded-[38px] sm:px-8 lg:px-12 lg:py-24">
           <div className="mx-auto max-w-7xl">
             <div className="mb-10 flex flex-col justify-between gap-5 lg:flex-row lg:items-end">
               <div>
-                <p className="text-base font-black text-[#b9ff66]">Build only what your company needs</p>
+                <p className="text-base font-black text-[#b0d226]">Build only what your company needs</p>
                 <h2 className="mt-4 max-w-4xl text-[clamp(2.2rem,9vw,4.8rem)] font-black leading-[0.92]">
                   Pick the workflow your team actually uses.
                 </h2>
@@ -1080,7 +1323,7 @@ function TeamsContent() {
               </p>
             </div>
 
-            <div className="rounded-[34px] bg-white p-6 text-[#090c13]">
+            <div className="rounded-[34px] bg-white p-6 text-[#101820]">
               <div className="grid gap-4 lg:grid-cols-[0.85fr_1.15fr]">
                 <div>
                   <p className="text-base font-black text-[#315d63]">Base Workspace</p>
@@ -1220,9 +1463,9 @@ function TeamsContent() {
 function FinalSection({ setActiveMode }: { setActiveMode: (mode: Mode) => void }) {
   return (
     <section className="mx-auto max-w-[1500px] px-2 pb-2 sm:px-5 sm:pb-5">
-      <div className="rounded-[30px] bg-[#090c13] px-4 py-12 text-center text-white sm:rounded-[38px] sm:px-8 lg:py-24">
+      <div className="rounded-[30px] bg-[#101820] px-4 py-12 text-center text-white sm:rounded-[38px] sm:px-8 lg:py-24">
         <div className="mx-auto max-w-5xl">
-          <p className="text-base font-black text-[#b9ff66]">One product. Two ways to work.</p>
+          <p className="text-base font-black text-[#b0d226]">One product. Two ways to work.</p>
           <h2 className="mt-4 text-[clamp(2.3rem,10vw,5.6rem)] font-black leading-[0.92]">
             Build only the billing workflow you need.
           </h2>
@@ -1236,7 +1479,7 @@ function FinalSection({ setActiveMode }: { setActiveMode: (mode: Mode) => void }
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => setActiveMode("providers")}
-              className="inline-flex items-center justify-center gap-2 rounded-full bg-[#b9ff66] px-7 py-4 text-base font-black text-[#090c13] transition hover:bg-white"
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-[#b0d226] px-7 py-4 text-base font-black text-[#101820] transition hover:bg-white"
             >
               Start on WhatsApp
               <ArrowRight className="h-5 w-5" />
@@ -1244,7 +1487,7 @@ function FinalSection({ setActiveMode }: { setActiveMode: (mode: Mode) => void }
             <a
               href={TEAM_DEMO_URL}
               onClick={() => setActiveMode("teams")}
-              className="inline-flex items-center justify-center gap-2 rounded-full border border-white/20 px-7 py-4 text-base font-black text-white transition hover:bg-white hover:text-[#090c13]"
+              className="inline-flex items-center justify-center gap-2 rounded-full border border-white/20 px-7 py-4 text-base font-black text-white transition hover:bg-white hover:text-[#101820]"
             >
               Book a Team Demo
               <ArrowRight className="h-5 w-5" />
@@ -1256,7 +1499,9 @@ function FinalSection({ setActiveMode }: { setActiveMode: (mode: Mode) => void }
   )
 }
 
-function FaqSection() {
+function FaqSection({ config }: { config: LandingConfig | null }) {
+  const renderedFaqs = getFaqs(config)
+
   return (
     <section id="faq" className="mx-auto max-w-[1500px] px-2 py-2 sm:px-5 sm:py-3">
       <div className="rounded-[30px] bg-[#f0f3eb] px-4 py-12 sm:rounded-[38px] sm:px-8 lg:px-12 lg:py-24">
@@ -1275,7 +1520,7 @@ function FaqSection() {
           </div>
 
           <div className="grid items-start gap-3 lg:grid-cols-2">
-            {faqs.map((faq, index) => (
+            {renderedFaqs.map((faq, index) => (
               <details
                 key={faq.question}
                 open={index < 2}
@@ -1283,7 +1528,7 @@ function FaqSection() {
               >
                 <summary className="flex cursor-pointer list-none items-start justify-between gap-4 text-lg font-black leading-tight sm:text-xl">
                   {faq.question}
-                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#090c13] text-sm text-white transition group-open:rotate-45">
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#101820] text-sm text-white transition group-open:rotate-45">
                     +
                   </span>
                 </summary>
@@ -1311,18 +1556,17 @@ function SiteFooter({ setActiveMode }: { setActiveMode: (mode: Mode) => void }) 
           <div>
             <div className="flex items-center gap-2">
               <Image
-                src="/assets/icons/logohead.png"
+                src="/assets/prymagent/logos/prymagent-lockup.png"
                 alt="PrymAgent logo"
-                width={38}
-                height={38}
-                className="h-9 w-9"
+                width={174}
+                height={46}
+                className="h-10 w-auto"
               />
-              <span className="text-2xl font-black">PrymAgent</span>
             </div>
             <p className="mt-5 max-w-sm text-base leading-7 text-[#5f636d]">
               AI-assisted billing, payment tracking, and records made simple for service providers and Nigerian teams.
             </p>
-            <p className="mt-5 text-sm font-bold text-[#090c13]">A product of Prym Technologies Limited.</p>
+            <p className="mt-5 text-sm font-bold text-[#101820]">A product of Prym Technologies Limited.</p>
           </div>
 
           <FooterColumn
@@ -1345,21 +1589,21 @@ function SiteFooter({ setActiveMode }: { setActiveMode: (mode: Mode) => void }) 
           />
 
           <div>
-            <h3 className="text-sm font-black text-[#090c13]">Get started</h3>
+            <h3 className="text-sm font-black text-[#101820]">Get started</h3>
             <div className="mt-4 grid gap-3">
               <a
                 href={WHATSAPP_URL}
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => setActiveMode("providers")}
-                className="rounded-full bg-[#b9ff66] px-5 py-3 text-center text-sm font-black text-[#090c13] transition hover:bg-[#d5ff99]"
+                className="rounded-full bg-[#b0d226] px-5 py-3 text-center text-sm font-black text-[#101820] transition hover:bg-[#d2e66b]"
               >
                 Start on WhatsApp
               </a>
               <a
                 href={TEAM_DEMO_URL}
                 onClick={() => setActiveMode("teams")}
-                className="rounded-full bg-[#090c13] px-5 py-3 text-center text-sm font-black text-white transition hover:bg-[#2b2f37]"
+                className="rounded-full bg-[#101820] px-5 py-3 text-center text-sm font-black text-white transition hover:bg-[#161d25]"
               >
                 Book a Team Demo
               </a>
@@ -1385,14 +1629,14 @@ function FooterColumn({
 }) {
   return (
     <div>
-      <h3 className="text-sm font-black text-[#090c13]">{title}</h3>
+      <h3 className="text-sm font-black text-[#101820]">{title}</h3>
       <div className="mt-4 grid gap-3">
         {links.map((link) => (
           <a
             key={link.label}
             href={link.href}
             onClick={link.onClick}
-            className="text-sm font-bold text-[#5f636d] transition hover:text-[#090c13]"
+            className="text-sm font-bold text-[#5f636d] transition hover:text-[#101820]"
           >
             {link.label}
           </a>
@@ -1405,7 +1649,7 @@ function FooterColumn({
 function StepCard({ index, step }: { index: number; step: string }) {
   return (
     <div className="flex gap-4 rounded-[24px] bg-white p-5">
-      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#090c13] text-sm font-black text-white">
+      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#101820] text-sm font-black text-white">
         {index + 1}
       </div>
       <p className="text-lg font-black leading-7">{step}</p>
@@ -1421,7 +1665,7 @@ function PricingPanel({ title, rows }: { title: string; rows: string[][] }) {
         {rows.map(([label, value]) => (
           <div key={label} className="grid grid-cols-[minmax(0,1fr)_auto] gap-3 border-b border-[#e8e8e8] px-4 py-4 last:border-b-0 sm:gap-4 sm:px-5">
             <span className="min-w-0 break-words font-bold text-[#4f545d]">{label}</span>
-            <span className="whitespace-nowrap text-right font-black text-[#090c13]">{value}</span>
+            <span className="whitespace-nowrap text-right font-black text-[#101820]">{value}</span>
           </div>
         ))}
       </div>
@@ -1434,7 +1678,7 @@ function FeatureList({ items, dark = false, compact = false }: { items: string[]
     <div className={`mt-6 grid gap-3 ${compact ? "" : "sm:grid-cols-2"}`}>
       {items.map((item) => (
         <div key={item} className="flex items-start gap-2">
-          <CheckCircle2 className={`mt-0.5 h-4 w-4 shrink-0 ${dark ? "text-[#b9ff66]" : "text-[#557a2d]"}`} />
+          <CheckCircle2 className={`mt-0.5 h-4 w-4 shrink-0 ${dark ? "text-[#b0d226]" : "text-[#557a2d]"}`} />
           <p className={`text-sm leading-6 ${dark ? "text-white/78" : "text-[#4f545d]"}`}>{item}</p>
         </div>
       ))}

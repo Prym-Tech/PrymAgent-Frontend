@@ -2,8 +2,11 @@ import type { Metadata } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-    title: 'PrymAgent - Your AI Pocket CFO',
-    description: 'Manage finances, invoices, and loans via WhatsApp with AI.',
+    title: 'PrymAgent - AI billing assistant',
+    description: 'Create quotes, invoices, receipts, track payments, and keep billing records from WhatsApp and web.',
+    icons: {
+        icon: '/favicon.ico',
+    },
 }
 
 export default function RootLayout({
