@@ -21,13 +21,12 @@ import {
   WalletCards,
   X,
 } from "lucide-react"
+import { buildApiUrl } from "@/lib/urls"
 
 const WHATSAPP_NUMBER = "2349032879124"
 const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}?text=Hi!%20I%27d%20like%20to%20get%20started%20with%20PrymAgent`
 const TEAM_DEMO_URL = "mailto:hello@prymtech.xyz?subject=PrymAgent%20Flow%20demo"
 const DEMO_VIDEO_URL = "https://www.youtube.com/embed/IjBJ_sn0bCQ?autoplay=1"
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api"
-
 type Mode = "providers" | "teams"
 
 type LandingConfig = {
@@ -641,7 +640,7 @@ export default function Home() {
 
     async function loadLandingConfig() {
       try {
-        const response = await fetch(`${API_BASE_URL}/public/landing-config`, {
+        const response = await fetch(buildApiUrl("/public/landing-config"), {
           headers: { Accept: "application/json" },
         })
         if (!response.ok) return

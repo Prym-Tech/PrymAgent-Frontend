@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Image from 'next/image'
+import { buildBackendUrl } from '@/lib/urls'
 import { AlertCircle, Clock, Loader2, Lock, ArrowLeft } from 'lucide-react'
 
 interface InvoiceItem {
@@ -56,9 +57,7 @@ export default function PaymentPage() {
   useEffect(() => {
     if (!invoiceNumber) return
 
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/'
-    
-    fetch(`${apiUrl}/finance/api/invoices/${invoiceNumber}/payment-page/`)
+    fetch(buildBackendUrl(`/finance/api/invoices/${invoiceNumber}/payment-page/`))
       .then(res => {
         if (!res.ok) {
           if (res.status === 404) {
