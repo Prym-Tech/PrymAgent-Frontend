@@ -31,6 +31,9 @@ interface InvoiceData {
   tax_rate: number
   tax_amount: number
   total: number
+  amount_paid?: number
+  balance_due?: number
+  payable_amount?: number
   due_date: string | null
   payment_reference: string
   payment_method: string
@@ -147,6 +150,8 @@ export default function PaymentPage() {
   }
 
   const brandColor = invoice.merchant.brand_color
+  const payableAmount = invoice.payable_amount ?? invoice.balance_due ?? invoice.total
+  const paidAmount = invoice.amount_paid ?? 0
   const isDueSoon = invoice.due_date && new Date(invoice.due_date) < new Date(Date.now() + 3 * 24 * 60 * 60 * 1000)
 
   return (
@@ -301,9 +306,21 @@ export default function PaymentPage() {
 
             <div className="pt-3 border-t border-border">
               <div className="flex justify-between items-center">
-                <span className="text-lg font-bold text-foreground">Total Due</span>
+                <span className="text-lg font-bold text-foreground">Invoice Total</span>
                 <span className="text-2xl font-bold" style={{ color: brandColor }}>
                   {formatCurrency(invoice.total)}
+                </span>
+              </div>
+              {paidAmount > 0 && (
+                <div className="flex justify-between items-center mt-3 text-sm">
+                  <span className="text-muted-foreground">Already Paid</span>
+                  <span className="font-medium text-foreground">{formatCurrency(paidAmount)}</span>
+                </div>
+              )}
+              <div className="flex justify-between items-center mt-3">
+                <span className="text-base font-semibold text-foreground">Balance To Pay</span>
+                <span className="text-xl font-bold" style={{ color: brandColor }}>
+                  {formatCurrency(payableAmount)}
                 </span>
               </div>
             </div>
@@ -338,7 +355,7 @@ export default function PaymentPage() {
             ) : (
               <>
                 <Lock className="h-5 w-5" />
-                Pay {formatCurrency(invoice.total)}
+                Pay {formatCurrency(payableAmount)}
               </>
             )}
           </button>

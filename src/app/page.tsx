@@ -825,7 +825,7 @@ export default function Home() {
                 priority
               />
               <h1 className="text-[clamp(2.45rem,10vw,5.45rem)] font-black leading-[0.92] text-white">
-                Business billing, payments, and records made simple with AI.
+                Business billing, payments, and records automated with AI.
               </h1>
 
               <p className="mx-auto mt-6 max-w-4xl text-base leading-7 text-white/78 sm:text-xl sm:leading-8">
