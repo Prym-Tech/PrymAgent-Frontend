@@ -1,174 +1,136 @@
 "use client"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import Link from "next/link"
+
 import { useEffect, useState } from "react"
+import Link from "next/link"
 import api from "@/lib/api"
+import { buildBackendUrl } from "@/lib/urls"
+import { formatCurrency, formatDate, whatsappLink } from "@/lib/format"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+
+interface RecentDocument {
+  type: string
+  number: string
+  client_name: string
+  amount: number
+  status: string
+  issue_date: string | null
+  pdf_url: string | null
+}
+
+interface Overview {
+  credit_balance: number
+  paid_this_month: number
+  total_outstanding: number
+  overdue_amount: number
+  unpaid_invoice_count: number
+  recent_documents: RecentDocument[]
+  pro?: { subscription?: { is_active?: boolean; status?: string } | null }
+}
+
+const quickActions = [
+  ["New Quote", "Create a quote"],
+  ["New Invoice", "Create an invoice"],
+  ["New Receipt", "Create a receipt"],
+  ["Add Client", "Add a client"],
+]
 
 export default function Dashboard() {
-    const [stats, setStats] = useState({ credits: 0, income: 0, expenses: 0 })
-    const [loading, setLoading] = useState(true)
+  const [overview, setOverview] = useState<Overview | null>(null)
+  const [error, setError] = useState("")
 
-    // Mock data fetch - in real app use SWR or React Query
-    useEffect(() => {
-        // Fetch stats logic here
-        // For MVP demo, setting static or implementing fetch later
-        setLoading(false)
-        setStats({ credits: 8, income: 150000, expenses: 45000 })
-    }, [])
+  useEffect(() => {
+    api
+      .get(buildBackendUrl("/finance/api/dashboard/overview/"))
+      .then((res) => setOverview(res.data))
+      .catch(() => setError("Unable to load your dashboard right now."))
+  }, [])
 
-    return (
-        <main className="p-6 md:p-10 space-y-6">
-            <div className="flex items-center justify-between">
-                <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
-                <div className="flex items-center gap-2">
-                    <span className="text-sm font-medium text-muted-foreground">Credits: <span className="text-foreground font-bold">{stats.credits}</span></span>
-                    <Link href="/dashboard/pricing">
-                        <Button size="sm" className="bg-brand-green hover:bg-brand-green/90 text-white">Buy Credits</Button>
-                    </Link>
+  const cards = [
+    ["Paid this month", formatCurrency(overview?.paid_this_month), "Confirmed payments received."],
+    ["Outstanding", formatCurrency(overview?.total_outstanding), "Open balances across invoices."],
+    ["Overdue", formatCurrency(overview?.overdue_amount), "Invoices marked overdue."],
+    ["Unpaid invoices", String(overview?.unpaid_invoice_count ?? 0), "Unpaid, part-paid, draft, or overdue."],
+  ]
+
+  return (
+    <div className="mx-auto max-w-7xl space-y-8">
+      <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-muted-foreground">Overview</p>
+          <h1 className="mt-2 text-3xl font-black tracking-tight sm:text-4xl">Your billing workspace</h1>
+          <p className="mt-2 max-w-2xl text-muted-foreground">
+            Review documents, track payment status, manage clients, and keep your WhatsApp billing flow organized.
+          </p>
+        </div>
+        <Link href="/dashboard/billing">
+          <Button className="rounded-full">Credits: {overview?.credit_balance ?? 0}</Button>
+        </Link>
+      </header>
+
+      {error ? <div className="rounded-2xl bg-red-50 p-4 text-sm text-red-700">{error}</div> : null}
+
+      <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        {cards.map(([title, value, hint]) => (
+          <Card key={title} className="rounded-3xl">
+            <CardHeader className="pb-3">
+              <CardDescription>{title}</CardDescription>
+              <CardTitle className="text-3xl">{value}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground">{hint}</p>
+            </CardContent>
+          </Card>
+        ))}
+      </section>
+
+      <section className="grid gap-5 lg:grid-cols-[1fr_0.8fr]">
+        <Card className="rounded-3xl">
+          <CardHeader>
+            <CardTitle>Recent documents</CardTitle>
+            <CardDescription>Your latest quotes, invoices, and receipts.</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {overview?.recent_documents?.length ? (
+              overview.recent_documents.map((doc) => (
+                <div key={`${doc.type}-${doc.number}`} className="flex flex-col gap-3 rounded-2xl border p-4 sm:flex-row sm:items-center sm:justify-between">
+                  <div>
+                    <p className="text-sm font-bold">{doc.type} {doc.number}</p>
+                    <p className="text-sm text-muted-foreground">{doc.client_name} · {formatDate(doc.issue_date)}</p>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className="text-sm font-semibold">{formatCurrency(doc.amount)}</span>
+                    <span className="rounded-full bg-muted px-3 py-1 text-xs font-semibold">{doc.status}</span>
+                    {doc.pdf_url ? (
+                      <a href={doc.pdf_url} target="_blank" rel="noreferrer">
+                        <Button size="sm" variant="outline">PDF</Button>
+                      </a>
+                    ) : null}
+                  </div>
                 </div>
-            </div>
+              ))
+            ) : (
+              <p className="rounded-2xl bg-muted p-4 text-sm text-muted-foreground">No documents yet. Start from WhatsApp when you are ready.</p>
+            )}
+          </CardContent>
+        </Card>
 
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            className="h-4 w-4 text-muted-foreground"
-                        >
-                            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-                        </svg>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold text-brand-green">₦{stats.income.toLocaleString()}</div>
-                        <p className="text-xs text-muted-foreground">+20.1% from last month</p>
-                    </CardContent>
-                </Card>
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Total Expenses</CardTitle>
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            className="h-4 w-4 text-muted-foreground"
-                        >
-                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                            <circle cx="9" cy="7" r="4" />
-                            <path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
-                        </svg>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold text-red-500">₦{stats.expenses.toLocaleString()}</div>
-                        <p className="text-xs text-muted-foreground">+4% from last month</p>
-                    </CardContent>
-                </Card>
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Net Profit</CardTitle>
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            className="h-4 w-4 text-muted-foreground"
-                        >
-                            <rect width="20" height="14" x="2" y="5" rx="2" />
-                            <path d="M2 10h20" />
-                        </svg>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">₦{(stats.income - stats.expenses).toLocaleString()}</div>
-                        <p className="text-xs text-muted-foreground">Healthy margin</p>
-                    </CardContent>
-                </Card>
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Active Invoices</CardTitle>
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            className="h-4 w-4 text-muted-foreground"
-                        >
-                            <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-                        </svg>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">3</div>
-                        <p className="text-xs text-muted-foreground">2 Overdue</p>
-                    </CardContent>
-                </Card>
-            </div>
-
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-                <Card className="col-span-4">
-                    <CardHeader>
-                        <CardTitle>Recent Activity</CardTitle>
-                        <CardDescription>
-                            Your last 5 transactions from WhatsApp.
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="space-y-8">
-                            {/* Mock List */}
-                            {[1, 2, 3].map((i) => (
-                                <div key={i} className="flex items-center">
-                                    <div className="ml-4 space-y-1">
-                                        <p className="text-sm font-medium leading-none">Consulting Fee - Client A</p>
-                                        <p className="text-sm text-muted-foreground">INCOME • Today</p>
-                                    </div>
-                                    <div className="ml-auto font-medium text-brand-green">+₦50,000.00</div>
-                                </div>
-                            ))}
-                            <div className="flex items-center">
-                                <div className="ml-4 space-y-1">
-                                    <p className="text-sm font-medium leading-none">Fuel & Transport</p>
-                                    <p className="text-sm text-muted-foreground">EXPENSE • Yesterday</p>
-                                </div>
-                                <div className="ml-auto font-medium text-red-500">-₦12,000.00</div>
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
-                <Card className="col-span-3">
-                    <CardHeader>
-                        <CardTitle>Quick Actions</CardTitle>
-                        <CardDescription>
-                            Perform tasks without WhatsApp.
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                        <Button className="w-full bg-secondary text-secondary-foreground hover:bg-secondary/80">
-                            Create Invoice
-                        </Button>
-                        <Button className="w-full" variant="outline">
-                            Log Transaction
-                        </Button>
-                        <Button className="w-full" variant="outline">
-                            Check Loan Status
-                        </Button>
-                    </CardContent>
-                </Card>
-            </div>
-        </main>
-    )
+        <Card className="rounded-3xl bg-[#101820] text-white">
+          <CardHeader>
+            <CardTitle>Quick actions</CardTitle>
+            <CardDescription className="text-white/65">Creation stays WhatsApp-first for accuracy.</CardDescription>
+          </CardHeader>
+          <CardContent className="grid gap-3">
+            {quickActions.map(([label, message]) => (
+              <a key={label} href={whatsappLink(message)} target="_blank" rel="noreferrer">
+                <Button className="w-full rounded-full bg-[#b0d226] text-[#101820] hover:bg-[#b0d226]/90">
+                  {label}
+                </Button>
+              </a>
+            ))}
+          </CardContent>
+        </Card>
+      </section>
+    </div>
+  )
 }

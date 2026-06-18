@@ -6,6 +6,14 @@ import Image from 'next/image'
 import { buildBackendUrl } from '@/lib/urls'
 import { AlertCircle, Clock, Loader2, Lock, ArrowLeft } from 'lucide-react'
 
+declare global {
+  interface Window {
+    PaystackPop?: new () => {
+      resumeTransaction: (accessCode: string) => void
+    }
+  }
+}
+
 interface InvoiceItem {
   description: string
   quantity: number
@@ -39,8 +47,38 @@ interface InvoiceData {
   payment_reference: string
   payment_method: string
   paystack_authorization_url: string | null
+  paystack_access_code: string | null
   status: string
   created_at: string
+}
+
+const PAYSTACK_INLINE_SCRIPT = 'https://js.paystack.co/v2/inline.js'
+
+function loadPaystackInline() {
+  return new Promise<void>((resolve, reject) => {
+    if (typeof window === 'undefined') {
+      reject(new Error('Browser checkout is unavailable.'))
+      return
+    }
+    if (window.PaystackPop) {
+      resolve()
+      return
+    }
+
+    const existing = document.querySelector<HTMLScriptElement>(`script[src="${PAYSTACK_INLINE_SCRIPT}"]`)
+    if (existing) {
+      existing.addEventListener('load', () => resolve(), { once: true })
+      existing.addEventListener('error', () => reject(new Error('Unable to load secure checkout. Please try again.')), { once: true })
+      return
+    }
+
+    const script = document.createElement('script')
+    script.src = PAYSTACK_INLINE_SCRIPT
+    script.async = true
+    script.onload = () => resolve()
+    script.onerror = () => reject(new Error('Unable to load secure checkout. Please try again.'))
+    document.body.appendChild(script)
+  })
 }
 
 export default function PaymentPage() {
@@ -78,16 +116,19 @@ export default function PaymentPage() {
       })
   }, [invoiceNumber])
 
-  const handlePayment = () => {
+  const handlePayment = async () => {
     if (!invoice || processing) return
 
     setProcessing(true)
 
     try {
-      if (!invoice.paystack_authorization_url) {
-        throw new Error('Secure payment link is unavailable for this invoice.')
+      if (!invoice.paystack_access_code) {
+        throw new Error('Secure checkout is unavailable for this invoice.')
       }
-      window.location.href = invoice.paystack_authorization_url
+      await loadPaystackInline()
+      const popup = new window.PaystackPop!()
+      popup.resumeTransaction(invoice.paystack_access_code)
+      setProcessing(false)
     } catch (err) {
       console.error('Payment error:', err)
       alert(err instanceof Error ? err.message : 'Payment initialization failed. Please try again.')
@@ -342,14 +383,14 @@ export default function PaymentPage() {
 
           <button
             onClick={handlePayment}
-            disabled={processing || !invoice.paystack_authorization_url}
+            disabled={processing || !invoice.paystack_access_code}
             className="w-full py-4 rounded-xl font-semibold text-white transition-all hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg"
             style={{ backgroundColor: brandColor }}
           >
             {processing ? (
               <>
                 <Loader2 className="h-5 w-5 animate-spin" />
-                Redirecting...
+                Opening secure checkout...
               </>
             ) : (
               <>
@@ -360,10 +401,7 @@ export default function PaymentPage() {
           </button>
 
           <p className="text-center text-xs text-muted-foreground mt-4">
-            Secured by Paystack • Powered by{' '}
-            <a href="https://prymshare.com" className="text-primary hover:underline">
-              PrymAgent
-            </a>
+            Secured by Paystack
           </p>
         </div>
       </div>
