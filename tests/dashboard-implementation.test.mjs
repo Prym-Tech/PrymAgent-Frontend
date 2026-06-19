@@ -47,9 +47,11 @@ test("documents expose only view and forced download actions", () => {
   const overviewPage = read("src/app/dashboard/page.tsx")
   assert.ok(!documentsPage.includes("Copy link"), "documents page should not expose copy link")
   assert.ok(documentsPage.includes("/finance/api/dashboard/documents/${doc.type}/${doc.number}/download/"))
+  assert.ok(documentsPage.includes("doc.has_pdf"), "documents page should show download from has_pdf")
   assert.ok(documentsPage.includes(">View<"))
   assert.ok(documentsPage.includes(">Download<"))
   assert.ok(overviewPage.includes("/finance/api/dashboard/documents/${doc.type}/${doc.number}/download/"))
+  assert.ok(overviewPage.includes("doc.has_pdf"), "overview should show download from has_pdf")
   assert.ok(!overviewPage.includes('target="_blank" rel="noreferrer">\\n                        <Button size="sm" variant="outline">PDF</Button>'))
 })
 

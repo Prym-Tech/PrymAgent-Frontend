@@ -15,6 +15,7 @@ interface RecentDocument {
   amount: number
   status: string
   issue_date: string | null
+  has_pdf?: boolean
   pdf_url: string | null
 }
 
@@ -105,7 +106,7 @@ export default function Dashboard() {
                   <div className="flex items-center gap-3">
                     <span className="text-sm font-semibold">{formatCurrency(doc.amount)}</span>
                     <span className="rounded-full bg-muted px-3 py-1 text-xs font-semibold">{doc.status}</span>
-                    {doc.pdf_url ? (
+                    {doc.pdf_url || doc.has_pdf ? (
                       <a href={documentDownloadUrl(doc)}>
                         <Button size="sm" variant="outline">Download</Button>
                       </a>

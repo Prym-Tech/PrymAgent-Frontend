@@ -9,6 +9,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
 const initialProfile = {
+  phone_number: "",
+  display_phone: "",
   brand_name: "",
   business_email: "",
   business_phone: "",
@@ -31,7 +33,7 @@ export default function ProfilePage() {
 
   const loadProfile = async () => {
     const res = await api.get(buildBackendUrl("/api/profile/"))
-    setProfile({ ...initialProfile, ...res.data.profile })
+    setProfile(normalizeProfile(res.data.profile))
   }
 
   useEffect(() => {
@@ -48,7 +50,7 @@ export default function ProfilePage() {
     setMessage("")
     try {
       const res = await api.put(buildBackendUrl("/api/profile/"), profile)
-      setProfile({ ...initialProfile, ...res.data.profile })
+      setProfile(normalizeProfile(res.data.profile))
       setMessage(res.data.bank_verification?.message ? `Saved. Bank check: ${res.data.bank_verification.message}` : "Profile saved.")
     } catch (err: any) {
       setError(err?.response?.data?.error || "Unable to save profile.")
@@ -67,7 +69,7 @@ export default function ProfilePage() {
       const res = await api.post(buildBackendUrl("/api/profile/logo/"), payload, {
         headers: { "Content-Type": "multipart/form-data" },
       })
-      setProfile({ ...initialProfile, ...res.data.profile })
+      setProfile(normalizeProfile(res.data.profile))
       setMessage("Logo uploaded. It will appear on future PDFs.")
     } catch (err: any) {
       setError(err?.response?.data?.error || "Unable to upload logo.")
@@ -92,7 +94,7 @@ export default function ProfilePage() {
         <CardContent className="grid gap-4 md:grid-cols-2">
           <Field label="Business name" value={profile.brand_name || ""} onChange={(value) => updateField("brand_name", value)} />
           <Field label="Email" value={profile.business_email || ""} onChange={(value) => updateField("business_email", value)} />
-          <Field label="Phone" value={profile.business_phone || ""} onChange={(value) => updateField("business_phone", value)} />
+          <Field label="Phone" value={profile.business_phone || profile.display_phone || profile.phone_number || ""} onChange={(value) => updateField("business_phone", value)} />
           <Field label="Brand colour" type="color" value={profile.brand_color || "#b0d226"} onChange={(value) => updateField("brand_color", value)} />
           <div className="space-y-2 md:col-span-2">
             <Label>Address</Label>
@@ -142,6 +144,14 @@ export default function ProfilePage() {
       </Card>
     </div>
   )
+}
+
+function normalizeProfile(profile: any) {
+  const merged = { ...initialProfile, ...(profile || {}) }
+  if (!merged.business_phone) {
+    merged.business_phone = merged.display_phone || merged.phone_number || ""
+  }
+  return merged
 }
 
 function Field({ label, value, onChange, type = "text" }: { label: string; value: string; onChange: (value: string) => void; type?: string }) {

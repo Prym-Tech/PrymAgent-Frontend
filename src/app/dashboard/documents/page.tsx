@@ -22,6 +22,7 @@ interface DocumentRow {
   issue_date: string | null
   due_date?: string | null
   valid_until?: string | null
+  has_pdf?: boolean
   pdf_url: string | null
   payment_page_url?: string | null
 }
@@ -128,9 +129,9 @@ export default function DocumentsPage() {
                 <p><span className="text-muted-foreground">Due/valid:</span> <b>{formatDate(doc.due_date || doc.valid_until)}</b></p>
               </div>
               <div className="flex flex-wrap gap-2">
-                {doc.pdf_url ? (
+                {doc.pdf_url || doc.has_pdf ? (
                   <>
-                    <a href={doc.pdf_url} target="_blank" rel="noreferrer"><Button size="sm">View</Button></a>
+                    {doc.pdf_url ? <a href={doc.pdf_url} target="_blank" rel="noreferrer"><Button size="sm">View</Button></a> : null}
                     <a href={downloadUrl(doc)}><Button size="sm" variant="outline">Download</Button></a>
                   </>
                 ) : null}
