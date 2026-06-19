@@ -17,6 +17,6 @@ export function formatDate(value: string | null | undefined) {
 }
 
 export function whatsappLink(message: string) {
-  const number = process.env.NEXT_PUBLIC_PRYMAGENT_WHATSAPP_NUMBER || "2348012345678"
+  const number = process.env.NEXT_PUBLIC_PRYMAGENT_WHATSAPP_NUMBER || "2349032879124"
   return `https://wa.me/${number}?text=${encodeURIComponent(message)}`
 }

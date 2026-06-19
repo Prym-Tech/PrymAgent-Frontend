@@ -59,8 +59,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <span className="text-xl font-black text-[#101820]">PrymAgent</span>
             <span className="block text-xs text-muted-foreground">Solo dashboard</span>
           </Link>
-          <div className="rounded-full bg-[#b0d226]/25 px-3 py-1 text-xs font-bold md:mt-5 md:inline-block">
-            {user?.credits ?? 0} credits
+          <div className="flex items-center gap-2 md:mt-5 md:block">
+            <div className="rounded-full bg-[#b0d226]/25 px-3 py-1 text-xs font-bold md:inline-block">
+              {user?.credits ?? 0} credits
+            </div>
+            <Button variant="outline" size="sm" className="h-8 rounded-full px-3 text-xs md:hidden" onClick={logout}>
+              Log out
+            </Button>
           </div>
         </div>
 
