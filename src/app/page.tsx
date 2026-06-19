@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import Image from "next/image"
 import {
   ArrowRight,
@@ -793,6 +793,11 @@ export default function Home() {
               <a href="#faq" className="rounded-full px-5 py-2.5 transition hover:bg-white">
                 FAQ
               </a>
+              {!isTeams && (
+                <a href="/how-to" className="rounded-full px-5 py-2.5 transition hover:bg-white">
+                  How to use
+                </a>
+              )}
             </nav>
 
             <div className="hidden items-center gap-2 lg:flex">
@@ -803,6 +808,14 @@ export default function Home() {
               >
                 Watch demo
               </button>
+              {!isTeams && (
+                <a
+                  href="/how-to"
+                  className="rounded-full px-5 py-3 text-sm font-black transition hover:bg-[#f4f5f1]"
+                >
+                  How to use
+                </a>
+              )}
               {isTeams ? (
                 <span className="rounded-full bg-[#101820] px-5 py-3 text-sm font-black text-white/80">
                   Flow coming soon
@@ -871,6 +884,15 @@ export default function Home() {
                     {item}
                   </a>
                 ))}
+                {!isTeams && (
+                  <a
+                    href="/how-to"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="rounded-[20px] bg-[#f8f8f8] px-5 py-4"
+                  >
+                    How to use
+                  </a>
+                )}
               </nav>
               <div className="mt-2 grid gap-2 sm:grid-cols-2">
                 <button
@@ -905,6 +927,15 @@ export default function Home() {
                     className="rounded-[20px] bg-white px-5 py-4 font-black"
                   >
                     Log in
+                  </a>
+                )}
+                {!isTeams && (
+                  <a
+                    href="/how-to"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="rounded-[20px] bg-[#f8f8f8] px-5 py-4 font-black"
+                  >
+                    How to use
                   </a>
                 )}
               </div>
@@ -952,7 +983,7 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="mx-auto mt-6 flex max-w-2xl flex-col gap-3 rounded-[28px] bg-white/10 p-2 ring-1 ring-white/12 sm:flex-row">
+              <div className="mx-auto mt-6 flex max-w-4xl flex-col gap-3 rounded-[28px] bg-white/10 p-2 ring-1 ring-white/12 sm:flex-row">
                 {isTeams ? (
                   <>
                     <span className="inline-flex flex-1 items-center justify-center gap-2 rounded-[22px] bg-[#b0d226] px-6 py-4 text-base font-black text-[#101820]">
@@ -983,6 +1014,12 @@ export default function Home() {
                     >
                       Log in to dashboard
                       <LogIn className="h-5 w-5" />
+                    </a>
+                    <a
+                      href="/how-to"
+                      className="inline-flex flex-1 items-center justify-center gap-2 rounded-[22px] bg-white/12 px-6 py-4 text-base font-black text-white ring-1 ring-white/12 transition hover:bg-white/18"
+                    >
+                      How to use
                     </a>
                   </>
                 )}
@@ -1130,6 +1167,7 @@ function ModeTab({
 function WhatsAppChatDemo() {
   const [scenarioIndex, setScenarioIndex] = useState(0)
   const [visibleMessages, setVisibleMessages] = useState(1)
+  const chatScrollRef = useRef<HTMLDivElement | null>(null)
   const scenario = providerChatScenarios[scenarioIndex]
   const messages = scenario.messages
   const nextMessage = messages[visibleMessages]
@@ -1149,11 +1187,21 @@ function WhatsAppChatDemo() {
     return () => window.clearTimeout(timer)
   }, [isTyping, messages.length, visibleMessages])
 
+  useEffect(() => {
+    const node = chatScrollRef.current
+    if (!node) return
+
+    node.scrollTo({
+      top: node.scrollHeight,
+      behavior: "smooth",
+    })
+  }, [scenarioIndex, visibleMessages])
+
   return (
-    <div className="relative overflow-hidden rounded-[34px] bg-[#101820] p-3 text-white shadow-2xl shadow-[#101820]/20 sm:p-5">
+    <div className="relative h-[clamp(500px,64svh,680px)] overflow-hidden rounded-[34px] bg-[#101820] p-3 text-white shadow-2xl shadow-[#101820]/20 sm:h-[clamp(520px,62svh,700px)] sm:p-5 lg:h-[clamp(560px,60vh,720px)]">
       <div className="absolute inset-0 opacity-25" style={{ backgroundImage: "radial-gradient(circle at 20% 10%, rgba(176,210,38,.55), transparent 16rem), radial-gradient(circle at 90% 30%, rgba(72,215,255,.35), transparent 18rem)" }} />
-      <div className="relative overflow-hidden rounded-[28px] bg-[#eef3ea] text-[#101820]">
-        <div className="flex items-center justify-between gap-4 bg-[#075e54] px-4 py-4 text-white sm:px-5">
+      <div className="relative flex h-full flex-col overflow-hidden rounded-[28px] bg-[#eef3ea] text-[#101820]">
+        <div className="flex shrink-0 items-center justify-between gap-4 bg-[#075e54] px-4 py-4 text-white sm:px-5">
           <div className="flex items-center gap-3">
             <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#b0d226] text-[#101820]">
               <MessageCircle className="h-6 w-6" />
@@ -1168,7 +1216,10 @@ function WhatsAppChatDemo() {
           </span>
         </div>
 
-        <div className="min-h-[540px] bg-[linear-gradient(135deg,#e7efe2_0%,#f6f7f2_100%)] px-3 py-5 sm:px-5">
+        <div
+          ref={chatScrollRef}
+          className="min-h-0 flex-1 overflow-y-auto overscroll-contain scroll-smooth bg-[linear-gradient(135deg,#e7efe2_0%,#f6f7f2_100%)] px-3 py-5 [scrollbar-width:thin] sm:px-5"
+        >
           <div className="space-y-3">
             {messages.slice(0, visibleMessages).map((message, index) => (
               <div
@@ -1231,7 +1282,7 @@ function WhatsAppChatDemo() {
           </div>
         </div>
 
-        <div className="grid gap-2 border-t border-[#d5dfd3] bg-white p-3 sm:grid-cols-3">
+        <div className="grid shrink-0 grid-cols-3 gap-1.5 border-t border-[#d5dfd3] bg-white p-2.5 sm:gap-2 sm:p-3">
           {providerChatScenarios.map((item, index) => (
             <button
               key={item.label}
@@ -1240,7 +1291,7 @@ function WhatsAppChatDemo() {
                 setScenarioIndex(index)
                 setVisibleMessages(1)
               }}
-              className={`rounded-full px-3 py-2 text-xs font-black transition ${
+              className={`truncate rounded-full px-2 py-2 text-[11px] font-black transition sm:px-3 sm:text-xs ${
                 scenarioIndex === index ? "bg-[#101820] text-white" : "bg-[#f0f3eb] text-[#4f545d]"
               }`}
             >
