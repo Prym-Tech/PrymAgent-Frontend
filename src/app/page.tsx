@@ -11,6 +11,8 @@ import {
   ClipboardList,
   FileText,
   FileWarning,
+  LayoutDashboard,
+  LogIn,
   Menu,
   MessageCircle,
   Play,
@@ -25,9 +27,22 @@ import { buildApiUrl } from "@/lib/urls"
 
 const WHATSAPP_NUMBER = "2349032879124"
 const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}?text=Hi!%20I%27d%20like%20to%20get%20started%20with%20PrymAgent`
-const TEAM_DEMO_URL = "mailto:hello@prymtech.xyz?subject=PrymAgent%20Flow%20demo"
+const DASHBOARD_URL = "/login"
 const DEMO_VIDEO_URL = "https://www.youtube.com/embed/IjBJ_sn0bCQ?autoplay=1"
 type Mode = "providers" | "teams"
+type ChatDemoMessage = {
+  from: "user" | "agent"
+  text: string
+  pdf?: {
+    title: string
+    meta: string
+  }
+}
+type ProviderChatScenario = {
+  label: string
+  accent: string
+  messages: ChatDemoMessage[]
+}
 
 type LandingConfig = {
   currency?: {
@@ -212,6 +227,63 @@ const providerCanDo = [
   "Generate receipts",
   "Keep client records",
   "See simple earnings summaries",
+]
+
+const providerChatScenarios: ProviderChatScenario[] = [
+  {
+    label: "Quote",
+    accent: "bg-[#b0d226]",
+    messages: [
+      { from: "user", text: "Create a quote for Ada Ventures: website redesign, NGN250,000. Valid for 14 days." },
+      {
+        from: "agent",
+        text:
+          "Please confirm this quote before I generate the PDF:\n\nClient: Ada Ventures\nItems:\n- Website redesign x1: NGN250,000.00\nSubtotal: NGN250,000.00\nTotal: NGN250,000.00\nValid until: 2026-07-03\nPayment terms: 60% upfront, 40% after delivery\n\nCredit charge: 2 credits\n\nReply *confirm* to approve, *cancel* to stop, or send a correction.",
+      },
+      { from: "user", text: "confirm" },
+      {
+        from: "agent",
+        text: "Quote generated successfully. Your client-ready PDF is attached.",
+        pdf: { title: "Prym Studio Quote Q-104.pdf", meta: "Quote PDF • Ada Ventures • NGN250,000" },
+      },
+    ],
+  },
+  {
+    label: "Invoice",
+    accent: "bg-[#f6eef5]",
+    messages: [
+      { from: "user", text: "Convert that quote to an invoice and use my bank details." },
+      {
+        from: "agent",
+        text:
+          "Please confirm this invoice before I generate the PDF:\n\nClient: Ada Ventures\nItems:\n- Website redesign x1: NGN250,000.00\nSubtotal: NGN250,000.00\nTax: NGN0.00 (0.00%)\nTotal due: NGN250,000.00\nDue date: 2026-07-10\nPayment option: BANK\n\nCredit charge: 3 credits\n\nReply *confirm* to approve, *cancel* to stop, or send a correction.",
+      },
+      { from: "user", text: "confirm" },
+      {
+        from: "agent",
+        text: "Invoice generated successfully. You can share it on WhatsApp or view it from your dashboard.",
+        pdf: { title: "Prym Studio Invoice INV-208.pdf", meta: "Invoice PDF • Bank details included" },
+      },
+    ],
+  },
+  {
+    label: "Receipt",
+    accent: "bg-[#e9f1f2]",
+    messages: [
+      { from: "user", text: "Create a receipt for Ada Ventures for logo design, NGN75,000, paid by transfer today." },
+      {
+        from: "agent",
+        text:
+          "Please confirm this receipt before I generate the PDF:\n\nCustomer: Ada Ventures\nLinked invoice: None\nLinked payment: None\nReceipt date: 2026-06-19\nPayment method: Transfer\nReference: Not set\nContent: Summary receipt\nSubtotal: NGN75,000.00\nTax: NGN0.00\nDiscount: NGN0.00\nAmount receipted: NGN75,000.00\n\nCredit charge: 1 credit\n\nReply *confirm* to approve, *cancel* to stop, or send a correction.",
+      },
+      { from: "user", text: "confirm" },
+      {
+        from: "agent",
+        text: "Receipt generated successfully. Your records are updated.",
+        pdf: { title: "Prym Studio Receipt RC-086.pdf", meta: "Receipt PDF • Transfer • NGN75,000" },
+      },
+    ],
+  },
 ]
 
 const providerFeatures = [
@@ -610,13 +682,13 @@ const faqs = [
       "PrymAgent also does not replace your accountant. It helps you keep cleaner billing records, which can make your accountant's work easier.",
     ],
   },
-  {
-    question: "How do I get started?",
-    answer: [
-      "Service providers can start directly on WhatsApp.",
-      "Teams and companies can book a workflow demo so PrymAgent can recommend the right setup based on their billing process.",
-    ],
-  },
+    {
+      question: "How do I get started?",
+      answer: [
+        "Service providers can start directly on WhatsApp.",
+        "PrymAgent Flow for teams is coming soon. The current release is focused on PrymAgent Solo for independent service providers.",
+      ],
+    },
 ]
 
 export default function Home() {
@@ -731,14 +803,28 @@ export default function Home() {
               >
                 Watch demo
               </button>
-              <a
-                href={isTeams ? TEAM_DEMO_URL : WHATSAPP_URL}
-                target={isTeams ? undefined : "_blank"}
-                rel={isTeams ? undefined : "noopener noreferrer"}
-              className="rounded-full bg-[#101820] px-5 py-3 text-sm font-black text-white transition hover:bg-[#161d25]"
-              >
-                {isTeams ? "Book demo" : "Start on WhatsApp"}
-              </a>
+              {isTeams ? (
+                <span className="rounded-full bg-[#101820] px-5 py-3 text-sm font-black text-white/80">
+                  Flow coming soon
+                </span>
+              ) : (
+                <>
+                  <a
+                    href={DASHBOARD_URL}
+                    className="rounded-full px-5 py-3 text-sm font-black transition hover:bg-[#f4f5f1]"
+                  >
+                    Log in
+                  </a>
+                  <a
+                    href={WHATSAPP_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="rounded-full bg-[#101820] px-5 py-3 text-sm font-black text-white transition hover:bg-[#161d25]"
+                  >
+                    Start on WhatsApp
+                  </a>
+                </>
+              )}
             </div>
 
             <button
@@ -797,15 +883,30 @@ export default function Home() {
                 >
                   Watch demo
                 </button>
-                <a
-                  href={isTeams ? TEAM_DEMO_URL : WHATSAPP_URL}
-                  target={isTeams ? undefined : "_blank"}
-                  rel={isTeams ? undefined : "noopener noreferrer"}
-                  onClick={() => setIsMenuOpen(false)}
-                  className="rounded-[20px] bg-[#b0d226] px-5 py-4 font-black"
-                >
-                  {isTeams ? "Book demo" : "Start on WhatsApp"}
-                </a>
+                {isTeams ? (
+                  <span className="rounded-[20px] bg-[#101820] px-5 py-4 font-black text-white">
+                    Flow coming soon
+                  </span>
+                ) : (
+                  <a
+                    href={WHATSAPP_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="rounded-[20px] bg-[#b0d226] px-5 py-4 font-black"
+                  >
+                    Start on WhatsApp
+                  </a>
+                )}
+                {!isTeams && (
+                  <a
+                    href={DASHBOARD_URL}
+                    onClick={() => setIsMenuOpen(false)}
+                    className="rounded-[20px] bg-white px-5 py-4 font-black"
+                  >
+                    Log in
+                  </a>
+                )}
               </div>
             </div>
           )}
@@ -852,21 +953,39 @@ export default function Home() {
               </div>
 
               <div className="mx-auto mt-6 flex max-w-2xl flex-col gap-3 rounded-[28px] bg-white/10 p-2 ring-1 ring-white/12 sm:flex-row">
-                <a
-                  href={isTeams ? TEAM_DEMO_URL : WHATSAPP_URL}
-                  target={isTeams ? undefined : "_blank"}
-                  rel={isTeams ? undefined : "noopener noreferrer"}
-                  className="inline-flex flex-1 items-center justify-center gap-2 rounded-[22px] bg-[#b0d226] px-6 py-4 text-base font-black text-[#101820] transition hover:bg-white"
-                >
-                  {isTeams ? "Book a workflow demo" : "Start on WhatsApp"}
-                  <ArrowRight className="h-5 w-5" />
-                </a>
-                <a
-                  href={isTeams ? "#packages" : "#pricing"}
-                  className="inline-flex flex-1 items-center justify-center gap-2 rounded-[22px] bg-white px-6 py-4 text-base font-black text-[#101820] transition hover:bg-[#f7faf0]"
-                >
-                  {isTeams ? "Build your package" : "See pricing"}
-                </a>
+                {isTeams ? (
+                  <>
+                    <span className="inline-flex flex-1 items-center justify-center gap-2 rounded-[22px] bg-[#b0d226] px-6 py-4 text-base font-black text-[#101820]">
+                      Flow coming soon
+                      <Clock3 className="h-5 w-5" />
+                    </span>
+                    <a
+                      href="#packages"
+                      className="inline-flex flex-1 items-center justify-center gap-2 rounded-[22px] bg-white px-6 py-4 text-base font-black text-[#101820] transition hover:bg-[#f7faf0]"
+                    >
+                      Preview packages
+                    </a>
+                  </>
+                ) : (
+                  <>
+                    <a
+                      href={WHATSAPP_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex flex-1 items-center justify-center gap-2 rounded-[22px] bg-[#b0d226] px-6 py-4 text-base font-black text-[#101820] transition hover:bg-white"
+                    >
+                      Start on WhatsApp
+                      <ArrowRight className="h-5 w-5" />
+                    </a>
+                    <a
+                      href={DASHBOARD_URL}
+                      className="inline-flex flex-1 items-center justify-center gap-2 rounded-[22px] bg-white px-6 py-4 text-base font-black text-[#101820] transition hover:bg-[#f7faf0]"
+                    >
+                      Log in to dashboard
+                      <LogIn className="h-5 w-5" />
+                    </a>
+                  </>
+                )}
               </div>
             </div>
 
@@ -1008,6 +1127,230 @@ function ModeTab({
   )
 }
 
+function WhatsAppChatDemo() {
+  const [scenarioIndex, setScenarioIndex] = useState(0)
+  const [visibleMessages, setVisibleMessages] = useState(1)
+  const scenario = providerChatScenarios[scenarioIndex]
+  const messages = scenario.messages
+  const nextMessage = messages[visibleMessages]
+  const isTyping = Boolean(nextMessage && nextMessage.from === "agent")
+
+  useEffect(() => {
+    const delay = visibleMessages >= messages.length ? 2600 : isTyping ? 1300 : 950
+    const timer = window.setTimeout(() => {
+      if (visibleMessages >= messages.length) {
+        setScenarioIndex((current) => (current + 1) % providerChatScenarios.length)
+        setVisibleMessages(1)
+      } else {
+        setVisibleMessages((current) => current + 1)
+      }
+    }, delay)
+
+    return () => window.clearTimeout(timer)
+  }, [isTyping, messages.length, visibleMessages])
+
+  return (
+    <div className="relative overflow-hidden rounded-[34px] bg-[#101820] p-3 text-white shadow-2xl shadow-[#101820]/20 sm:p-5">
+      <div className="absolute inset-0 opacity-25" style={{ backgroundImage: "radial-gradient(circle at 20% 10%, rgba(176,210,38,.55), transparent 16rem), radial-gradient(circle at 90% 30%, rgba(72,215,255,.35), transparent 18rem)" }} />
+      <div className="relative overflow-hidden rounded-[28px] bg-[#eef3ea] text-[#101820]">
+        <div className="flex items-center justify-between gap-4 bg-[#075e54] px-4 py-4 text-white sm:px-5">
+          <div className="flex items-center gap-3">
+            <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#b0d226] text-[#101820]">
+              <MessageCircle className="h-6 w-6" />
+            </div>
+            <div>
+              <p className="text-base font-black leading-none">PrymAgent</p>
+              <p className="mt-1 text-xs font-semibold text-white/72">AI billing assistant on WhatsApp</p>
+            </div>
+          </div>
+          <span className={`rounded-full px-3 py-1 text-xs font-black text-[#101820] ${scenario.accent}`}>
+            {scenario.label}
+          </span>
+        </div>
+
+        <div className="min-h-[540px] bg-[linear-gradient(135deg,#e7efe2_0%,#f6f7f2_100%)] px-3 py-5 sm:px-5">
+          <div className="space-y-3">
+            {messages.slice(0, visibleMessages).map((message, index) => (
+              <div
+                key={`${scenario.label}-${index}-${message.text}`}
+                className={`flex ${message.from === "user" ? "justify-end" : "justify-start"}`}
+              >
+                <div
+                  className={`max-w-[90%] rounded-[20px] px-4 py-3 text-sm font-bold leading-6 shadow-sm sm:max-w-[82%] ${
+                    message.from === "user"
+                      ? "rounded-br-md bg-[#dcf8c6]"
+                      : "rounded-bl-md bg-white"
+                  }`}
+                >
+                  <p className="whitespace-pre-line">{message.text}</p>
+                  {message.pdf && (
+                    <div className="mt-3 overflow-hidden rounded-[16px] border border-[#d8ded5] bg-[#f7faf0]">
+                      <div className="flex items-center gap-3 border-b border-[#d8ded5] bg-white px-3 py-3">
+                        <div className="flex h-11 w-9 shrink-0 items-center justify-center rounded-[8px] bg-[#101820] text-white">
+                          <FileText className="h-5 w-5" />
+                        </div>
+                        <div className="min-w-0">
+                          <p className="truncate text-xs font-black text-[#101820]">{message.pdf.title}</p>
+                          <p className="mt-1 text-[10px] font-bold text-[#7b817a]">{message.pdf.meta}</p>
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-[0.7fr_1fr] gap-2 p-3">
+                        <div className="rounded-[10px] bg-[#b0d226] p-2">
+                          <div className="h-2 w-12 rounded-full bg-[#101820]/70" />
+                          <div className="mt-2 h-1.5 w-8 rounded-full bg-[#101820]/30" />
+                        </div>
+                        <div className="space-y-1.5">
+                          <div className="h-2 rounded-full bg-[#cdd6c7]" />
+                          <div className="h-2 w-4/5 rounded-full bg-[#cdd6c7]" />
+                          <div className="h-2 w-2/3 rounded-full bg-[#cdd6c7]" />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  <span className="mt-1 block text-right text-[10px] font-black text-[#8b918a]">
+                    {message.from === "user" ? "You" : "PrymAgent"}
+                  </span>
+                </div>
+              </div>
+            ))}
+
+            {isTyping && (
+              <div className="flex justify-start">
+                <div className="flex items-center gap-1 rounded-[18px] rounded-bl-md bg-white px-4 py-3 shadow-sm">
+                  {[0, 1, 2].map((dot) => (
+                    <span
+                      key={dot}
+                      className="h-2 w-2 animate-bounce rounded-full bg-[#8b918a]"
+                      style={{ animationDelay: `${dot * 130}ms` }}
+                    />
+                  ))}
+                  <span className="ml-2 text-xs font-black text-[#6c746d]">PrymAgent is typing</span>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="grid gap-2 border-t border-[#d5dfd3] bg-white p-3 sm:grid-cols-3">
+          {providerChatScenarios.map((item, index) => (
+            <button
+              key={item.label}
+              type="button"
+              onClick={() => {
+                setScenarioIndex(index)
+                setVisibleMessages(1)
+              }}
+              className={`rounded-full px-3 py-2 text-xs font-black transition ${
+                scenarioIndex === index ? "bg-[#101820] text-white" : "bg-[#f0f3eb] text-[#4f545d]"
+              }`}
+            >
+              {item.label}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function DashboardExpressSection() {
+  const dashboardStats = [
+    ["Paid this month", "NGN850k", "from confirmed payments"],
+    ["Outstanding", "NGN250k", "2 unpaid invoices"],
+    ["Receipts", "18", "generated this month"],
+    ["Credits", "107", "available balance"],
+  ]
+
+  return (
+    <section className="mx-auto max-w-[1500px] px-2 py-2 sm:px-5 sm:py-3">
+      <div className="overflow-hidden rounded-[30px] bg-[#101820] px-4 py-12 text-white sm:rounded-[38px] sm:px-8 lg:px-12 lg:py-20">
+        <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.82fr_1.18fr] lg:items-center">
+          <div>
+            <p className="text-base font-black text-[#b0d226]">Dashboard express view</p>
+            <h2 className="mt-4 max-w-3xl text-[clamp(2.1rem,8vw,4.3rem)] font-black leading-[0.94]">
+              See your billing records at a glance.
+            </h2>
+            <p className="mt-6 max-w-xl text-lg leading-8 text-white/72">
+              WhatsApp handles the work. The dashboard gives you a clean place to review invoices, receipts,
+              clients, credits, branding, and payment status whenever you need a wider view.
+            </p>
+            <a
+              href={DASHBOARD_URL}
+              className="mt-8 inline-flex items-center gap-2 rounded-full bg-[#b0d226] px-6 py-4 text-sm font-black text-[#101820] transition hover:bg-white"
+            >
+              Log in to dashboard
+              <LogIn className="h-4 w-4" />
+            </a>
+          </div>
+
+          <div className="relative rounded-[34px] bg-[#f7faf0] p-3 text-[#101820] shadow-2xl shadow-black/30 sm:p-5">
+            <div className="rounded-[28px] bg-white p-4">
+              <div className="flex flex-col gap-4 border-b border-[#e6ebdd] pb-4 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <p className="text-sm font-black text-[#7b817a]">PrymAgent Solo dashboard</p>
+                  <h3 className="mt-1 text-2xl font-black">Overview</h3>
+                </div>
+                <div className="flex rounded-full bg-[#f0f3eb] p-1 text-xs font-black">
+                  {["Documents", "Clients", "Billing"].map((item, index) => (
+                    <span key={item} className={`rounded-full px-3 py-2 ${index === 0 ? "bg-[#101820] text-white" : "text-[#5f636d]"}`}>
+                      {item}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                {dashboardStats.map(([label, value, helper]) => (
+                  <div key={label} className="rounded-[22px] bg-[#f0f3eb] p-4">
+                    <p className="text-xs font-black uppercase tracking-[0.18em] text-[#7b817a]">{label}</p>
+                    <p className="mt-3 text-3xl font-black leading-none">{value}</p>
+                    <p className="mt-2 text-xs font-bold text-[#697069]">{helper}</p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-4 grid gap-3 lg:grid-cols-[1.1fr_0.9fr]">
+                <div className="rounded-[24px] bg-[#101820] p-4 text-white">
+                  <div className="mb-4 flex items-center justify-between">
+                    <p className="text-sm font-black">Recent documents</p>
+                    <LayoutDashboard className="h-5 w-5 text-[#b0d226]" />
+                  </div>
+                  {[
+                    ["Invoice", "INV-208", "Ada Ventures", "Paid"],
+                    ["Receipt", "RC-086", "Logo design", "Generated"],
+                    ["Quote", "Q-104", "Website redesign", "Sent"],
+                  ].map(([type, number, client, status]) => (
+                    <div key={number} className="mb-2 grid grid-cols-[auto_1fr_auto] gap-3 rounded-[16px] bg-white/10 px-3 py-3 text-xs font-bold last:mb-0">
+                      <span className="rounded-full bg-[#b0d226] px-2 py-1 text-[#101820]">{type}</span>
+                      <span className="min-w-0 truncate">{number} • {client}</span>
+                      <span className="text-white/60">{status}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="rounded-[24px] bg-[#f6eef5] p-4">
+                  <p className="text-sm font-black">Client snapshot</p>
+                  <div className="mt-4 rounded-[18px] bg-white p-4">
+                    <p className="text-lg font-black">Ada Ventures</p>
+                    <div className="mt-4 space-y-2 text-sm font-bold text-[#5f636d]">
+                      <p>Total invoiced: NGN250,000</p>
+                      <p>Total paid: NGN100,000</p>
+                      <p>Outstanding: NGN150,000</p>
+                    </div>
+                  </div>
+                  <p className="mt-4 text-xs font-bold leading-5 text-[#5f636d]">
+                    Quick visibility without replacing the WhatsApp-first creation flow.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
 function ProviderContent({ config }: { config: LandingConfig | null }) {
   const freeTrialCopy = getFreeTrialCopy(config)
   const proPrice = getProPrice(config)
@@ -1027,36 +1370,20 @@ function ProviderContent({ config }: { config: LandingConfig | null }) {
               branded quotes, invoices, and receipts from simple WhatsApp messages while keeping track of clients,
               payments, and earnings.
             </p>
-          </div>
-
-          <div className="rounded-[28px] bg-[#f0f3eb] p-4 sm:rounded-[34px] sm:p-7">
-            <div className="grid gap-3 sm:grid-cols-2">
+            <div className="mt-8 grid gap-3 sm:grid-cols-2">
               {providerCanDo.map((point) => (
-                <div key={point} className="rounded-[22px] bg-white px-5 py-4 text-lg font-black">
+                <div key={point} className="rounded-[22px] bg-[#f0f3eb] px-5 py-4 text-base font-black sm:text-lg">
                   {point}
                 </div>
               ))}
             </div>
-            <div className="mt-4 grid grid-cols-3 gap-3">
-              {[
-                ["Quote", "/assets/prymagent/templates/prymagent-quote-template.png"],
-                ["Invoice", "/assets/prymagent/templates/prymagent-invoice-template.png"],
-                ["Receipt", "/assets/prymagent/templates/prymagent-receipt-template.png"],
-              ].map(([label, src]) => (
-                <div key={label} className="overflow-hidden rounded-[18px] bg-white p-2 shadow-sm">
-                  <Image
-                    src={src}
-                    alt={`PrymAgent ${label.toLowerCase()} template preview`}
-                    width={260}
-                    height={340}
-                    className="h-auto w-full rounded-[12px]"
-                  />
-                </div>
-              ))}
-            </div>
           </div>
+
+          <WhatsAppChatDemo />
         </div>
       </section>
+
+      <DashboardExpressSection />
 
       <section id="features" className="mx-auto max-w-[1500px] px-2 py-2 sm:px-5 sm:py-3">
         <div className="rounded-[30px] bg-white px-4 py-12 sm:rounded-[38px] sm:px-8 lg:px-12 lg:py-24">
@@ -1228,6 +1555,22 @@ function TeamsContent() {
               PrymAgent Flow is an AI-assisted billing workflow system that helps companies manage quotes, invoices,
               approvals, payment tracking, receipts, vendor bills, and reports based on their actual workflow.
             </p>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <button
+                type="button"
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-[#101820] px-6 py-4 text-sm font-black text-white"
+              >
+                Flow coming soon
+                <Clock3 className="h-4 w-4" />
+              </button>
+              <a
+                href="#packages"
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-6 py-4 text-sm font-black text-[#101820] shadow-sm transition hover:bg-[#f7faf0]"
+              >
+                Preview team packages
+                <ArrowRight className="h-4 w-4" />
+              </a>
+            </div>
           </div>
 
           <div className="rounded-[28px] bg-[#dfeaec] p-4 sm:rounded-[34px] sm:p-7">
@@ -1484,13 +1827,21 @@ function FinalSection({ setActiveMode }: { setActiveMode: (mode: Mode) => void }
               <ArrowRight className="h-5 w-5" />
             </a>
             <a
-              href={TEAM_DEMO_URL}
-              onClick={() => setActiveMode("teams")}
+              href={DASHBOARD_URL}
+              onClick={() => setActiveMode("providers")}
               className="inline-flex items-center justify-center gap-2 rounded-full border border-white/20 px-7 py-4 text-base font-black text-white transition hover:bg-white hover:text-[#101820]"
             >
-              Book a Team Demo
-              <ArrowRight className="h-5 w-5" />
+              Log in to dashboard
+              <LogIn className="h-5 w-5" />
             </a>
+            <button
+              type="button"
+              onClick={() => setActiveMode("teams")}
+              className="inline-flex items-center justify-center gap-2 rounded-full border border-white/20 px-7 py-4 text-base font-black text-white/75"
+            >
+              Flow coming soon
+              <Clock3 className="h-5 w-5" />
+            </button>
           </div>
         </div>
       </div>
@@ -1600,12 +1951,19 @@ function SiteFooter({ setActiveMode }: { setActiveMode: (mode: Mode) => void }) 
                 Start on WhatsApp
               </a>
               <a
-                href={TEAM_DEMO_URL}
-                onClick={() => setActiveMode("teams")}
+                href={DASHBOARD_URL}
+                onClick={() => setActiveMode("providers")}
                 className="rounded-full bg-[#101820] px-5 py-3 text-center text-sm font-black text-white transition hover:bg-[#161d25]"
               >
-                Book a Team Demo
+                Log in to dashboard
               </a>
+              <button
+                type="button"
+                onClick={() => setActiveMode("teams")}
+                className="rounded-full border border-[#d2d8c7] px-5 py-3 text-center text-sm font-black text-[#5f636d]"
+              >
+                Flow coming soon
+              </button>
             </div>
           </div>
         </div>
