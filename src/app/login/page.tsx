@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
 type LoginState = "idle" | "ready" | "waiting" | "verified" | "expired" | "failed"
+const LOGIN_STORAGE_KEY = "prymagent_pending_login"
 
 export default function LoginPage() {
   const router = useRouter()
@@ -24,10 +25,66 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const urlLoginId = params.get("login_id")
+    const urlPollToken = params.get("poll_token")
+    if (urlLoginId && urlPollToken) {
+      resumeLogin({ login_id: urlLoginId, poll_token: urlPollToken })
+      window.history.replaceState({}, "", "/login")
+      return () => {
+        if (pollRef.current) clearInterval(pollRef.current)
+      }
+    }
+
+    const saved = readStoredLogin()
+    if (saved) {
+      resumeLogin(saved)
+    }
+
     return () => {
       if (pollRef.current) clearInterval(pollRef.current)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  const storeLogin = (payload: any) => {
+    if (typeof window === "undefined") return
+    localStorage.setItem(LOGIN_STORAGE_KEY, JSON.stringify(payload))
+  }
+
+  const clearStoredLogin = () => {
+    if (typeof window === "undefined") return
+    localStorage.removeItem(LOGIN_STORAGE_KEY)
+  }
+
+  const readStoredLogin = () => {
+    if (typeof window === "undefined") return null
+    try {
+      const raw = localStorage.getItem(LOGIN_STORAGE_KEY)
+      if (!raw) return null
+      const parsed = JSON.parse(raw)
+      if (parsed.expires_at && new Date(parsed.expires_at).getTime() < Date.now()) {
+        localStorage.removeItem(LOGIN_STORAGE_KEY)
+        return null
+      }
+      if (!parsed.login_id || !parsed.poll_token) return null
+      return parsed
+    } catch {
+      localStorage.removeItem(LOGIN_STORAGE_KEY)
+      return null
+    }
+  }
+
+  const resumeLogin = (payload: any) => {
+    setLoginId(payload.login_id)
+    setPollToken(payload.poll_token)
+    setPhoneNumber(payload.phone_number || "")
+    setExpiresAt(payload.expires_at || "")
+    setWhatsappLink(payload.whatsapp_link || "")
+    setError("")
+    setState("waiting")
+    pollStatus(payload.login_id, payload.poll_token)
+  }
 
   const startLogin = async () => {
     setLoading(true)
@@ -38,6 +95,13 @@ export default function LoginPage() {
       setPollToken(res.data.poll_token)
       setWhatsappLink(res.data.whatsapp_link)
       setExpiresAt(res.data.expires_at)
+      storeLogin({
+        phone_number: phoneNumber,
+        login_id: res.data.login_id,
+        poll_token: res.data.poll_token,
+        whatsapp_link: res.data.whatsapp_link,
+        expires_at: res.data.expires_at,
+      })
       setState("ready")
     } catch (err: any) {
       setError(err?.response?.data?.error || "Unable to start login. Please check your number and try again.")
@@ -53,14 +117,17 @@ export default function LoginPage() {
         const res = await api.get(buildBackendUrl(`/api/auth/whatsapp/status?login_id=${id}&poll_token=${token}`))
         if (res.data.status === "verified") {
           if (pollRef.current) clearInterval(pollRef.current)
+          clearStoredLogin()
           setState("verified")
           setTimeout(() => router.push("/dashboard"), 700)
         } else if (res.data.status === "expired") {
           if (pollRef.current) clearInterval(pollRef.current)
+          clearStoredLogin()
           setState("expired")
           setError(res.data.error || "This login code has expired. Please request a new one.")
         } else if (res.data.status === "failed") {
           if (pollRef.current) clearInterval(pollRef.current)
+          clearStoredLogin()
           setState("failed")
           setError(res.data.error || "Verification failed. Please try again.")
         }
@@ -78,6 +145,7 @@ export default function LoginPage() {
 
   const reset = () => {
     if (pollRef.current) clearInterval(pollRef.current)
+    clearStoredLogin()
     setState("idle")
     setLoginId("")
     setPollToken("")

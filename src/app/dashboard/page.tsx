@@ -35,6 +35,10 @@ const quickActions = [
   ["Add Client", "Add a client"],
 ]
 
+function documentDownloadUrl(doc: RecentDocument) {
+  return buildBackendUrl(`/finance/api/dashboard/documents/${doc.type}/${doc.number}/download/`)
+}
+
 export default function Dashboard() {
   const [overview, setOverview] = useState<Overview | null>(null)
   const [error, setError] = useState("")
@@ -102,8 +106,8 @@ export default function Dashboard() {
                     <span className="text-sm font-semibold">{formatCurrency(doc.amount)}</span>
                     <span className="rounded-full bg-muted px-3 py-1 text-xs font-semibold">{doc.status}</span>
                     {doc.pdf_url ? (
-                      <a href={doc.pdf_url} target="_blank" rel="noreferrer">
-                        <Button size="sm" variant="outline">PDF</Button>
+                      <a href={documentDownloadUrl(doc)}>
+                        <Button size="sm" variant="outline">Download</Button>
                       </a>
                     ) : null}
                   </div>

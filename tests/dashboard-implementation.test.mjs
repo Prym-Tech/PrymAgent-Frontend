@@ -27,14 +27,30 @@ test("dashboard auth API client sends session cookies and CSRF headers", () => {
   assert.match(api, /withCredentials:\s*true/)
   assert.match(api, /xsrfCookieName:\s*['"]csrftoken['"]/)
   assert.match(api, /xsrfHeaderName:\s*['"]X-CSRFToken['"]/)
+  assert.ok(api.includes("/api/auth/csrf/"), "unsafe requests should bootstrap CSRF")
+  assert.match(api, /config\._csrfRetried/)
 })
 
 test("WhatsApp login uses backend-provided link and polls status before redirecting", () => {
   const loginPage = read("src/app/login/page.tsx")
   assert.match(loginPage, /res\.data\.whatsapp_link/)
   assert.match(loginPage, /api\/auth\/whatsapp\/status/)
+  assert.match(loginPage, /localStorage/)
+  assert.match(loginPage, /login_id/)
+  assert.match(loginPage, /poll_token/)
   assert.match(loginPage, /window\.open\(whatsappLink/)
   assert.match(loginPage, /router\.push\(["']\/dashboard["']\)/)
+})
+
+test("documents expose only view and forced download actions", () => {
+  const documentsPage = read("src/app/dashboard/documents/page.tsx")
+  const overviewPage = read("src/app/dashboard/page.tsx")
+  assert.ok(!documentsPage.includes("Copy link"), "documents page should not expose copy link")
+  assert.ok(documentsPage.includes("/finance/api/dashboard/documents/${doc.type}/${doc.number}/download/"))
+  assert.ok(documentsPage.includes(">View<"))
+  assert.ok(documentsPage.includes(">Download<"))
+  assert.ok(overviewPage.includes("/finance/api/dashboard/documents/${doc.type}/${doc.number}/download/"))
+  assert.ok(!overviewPage.includes('target="_blank" rel="noreferrer">\\n                        <Button size="sm" variant="outline">PDF</Button>'))
 })
 
 test("dashboard routes for Solo release exist", () => {

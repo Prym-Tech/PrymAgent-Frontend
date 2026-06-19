@@ -81,11 +81,8 @@ export default function DocumentsPage() {
     }
   }
 
-  const copyLink = async (doc: DocumentRow) => {
-    const link = doc.pdf_url || (doc.payment_page_url ? `${window.location.origin}${doc.payment_page_url}` : "")
-    if (!link) return
-    await navigator.clipboard.writeText(link)
-  }
+  const downloadUrl = (doc: DocumentRow) =>
+    buildBackendUrl(`/finance/api/dashboard/documents/${doc.type}/${doc.number}/download/`)
 
   return (
     <div className="mx-auto max-w-7xl space-y-6">
@@ -131,8 +128,12 @@ export default function DocumentsPage() {
                 <p><span className="text-muted-foreground">Due/valid:</span> <b>{formatDate(doc.due_date || doc.valid_until)}</b></p>
               </div>
               <div className="flex flex-wrap gap-2">
-                {doc.pdf_url ? <a href={doc.pdf_url} target="_blank" rel="noreferrer"><Button size="sm">View PDF</Button></a> : null}
-                <Button size="sm" variant="outline" onClick={() => copyLink(doc)}>Copy link</Button>
+                {doc.pdf_url ? (
+                  <>
+                    <a href={doc.pdf_url} target="_blank" rel="noreferrer"><Button size="sm">View</Button></a>
+                    <a href={downloadUrl(doc)}><Button size="sm" variant="outline">Download</Button></a>
+                  </>
+                ) : null}
                 {doc.type === "INVOICE" ? (
                   <>
                     <Button size="sm" variant="outline" onClick={() => updateInvoiceStatus(doc, "PAID")}>Mark paid</Button>
