@@ -1334,9 +1334,9 @@ function DashboardExpressSection() {
             </a>
           </div>
 
-          <div className="relative rounded-[34px] bg-[#f7faf0] p-3 text-[#101820] shadow-2xl shadow-black/30 sm:p-5">
-            <div className="rounded-[28px] bg-white p-4">
-              <div className="flex flex-col gap-4 border-b border-[#e6ebdd] pb-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="relative overflow-x-auto rounded-[34px] bg-[#f7faf0] p-3 text-[#101820] shadow-2xl shadow-black/30 [scrollbar-width:thin] sm:p-5">
+            <div className="min-w-[720px] rounded-[28px] bg-white p-4">
+              <div className="flex items-center justify-between gap-4 border-b border-[#e6ebdd] pb-4">
                 <div>
                   <p className="text-sm font-black text-[#7b817a]">PrymAgent Solo dashboard</p>
                   <h3 className="mt-1 text-2xl font-black">Overview</h3>
@@ -1350,7 +1350,7 @@ function DashboardExpressSection() {
                 </div>
               </div>
 
-              <div className="mt-4 grid gap-3 sm:grid-cols-2">
+              <div className="mt-4 grid grid-cols-2 gap-3">
                 {dashboardStats.map(([label, value, helper]) => (
                   <div key={label} className="rounded-[22px] bg-[#f0f3eb] p-4">
                     <p className="text-xs font-black uppercase tracking-[0.18em] text-[#7b817a]">{label}</p>
@@ -1360,7 +1360,7 @@ function DashboardExpressSection() {
                 ))}
               </div>
 
-              <div className="mt-4 grid gap-3 lg:grid-cols-[1.1fr_0.9fr]">
+              <div className="mt-4 grid grid-cols-[1.1fr_0.9fr] gap-3">
                 <div className="rounded-[24px] bg-[#101820] p-4 text-white">
                   <div className="mb-4 flex items-center justify-between">
                     <p className="text-sm font-black">Recent documents</p>
