@@ -187,6 +187,18 @@ export default function LoginPage() {
                 />
               </div>
 
+              <div className="rounded-2xl border border-[#d2d8c7] bg-[#f7faf0] p-4 text-xs leading-6 text-[#5f636d]">
+                By continuing, you agree to PrymAgent's{" "}
+                <a href="/terms" className="font-black text-[#101820] underline underline-offset-4">
+                  Terms and Conditions
+                </a>{" "}
+                and acknowledge the{" "}
+                <a href="/privacy" className="font-black text-[#101820] underline underline-offset-4">
+                  Privacy Policy
+                </a>
+                . PrymAgent helps prepare billing records, but you remain responsible for confirming document and payment details before use.
+              </div>
+
               {state === "idle" || state === "expired" || state === "failed" ? (
                 <Button className="w-full" onClick={startLogin} disabled={loading || !phoneNumber.trim()}>
                   {loading ? "Preparing login..." : "Continue"}

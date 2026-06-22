@@ -2021,6 +2021,14 @@ function SiteFooter({ setActiveMode }: { setActiveMode: (mode: Mode) => void }) 
 
         <div className="mt-10 flex flex-col gap-3 border-t border-[#ececec] pt-6 text-sm text-[#7b7f88] sm:flex-row sm:items-center sm:justify-between">
           <p>Copyright 2026 PrymAgent.</p>
+          <div className="flex flex-wrap gap-x-5 gap-y-2 font-bold">
+            <a href="/terms" className="transition hover:text-[#101820]">
+              Terms and Conditions
+            </a>
+            <a href="/privacy" className="transition hover:text-[#101820]">
+              Privacy Policy
+            </a>
+          </div>
           <p>Built for cleaner billing workflows.</p>
         </div>
       </div>
