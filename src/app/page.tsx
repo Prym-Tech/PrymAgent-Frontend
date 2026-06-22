@@ -1334,62 +1334,62 @@ function DashboardExpressSection() {
             </a>
           </div>
 
-          <div className="relative overflow-x-auto rounded-[34px] bg-[#f7faf0] p-3 text-[#101820] shadow-2xl shadow-black/30 [scrollbar-width:thin] sm:p-5">
-            <div className="min-w-[720px] rounded-[28px] bg-white p-4">
-              <div className="flex items-center justify-between gap-4 border-b border-[#e6ebdd] pb-4">
+          <div className="relative rounded-[34px] bg-[#f7faf0] p-2 text-[#101820] shadow-2xl shadow-black/30 sm:p-5">
+            <div className="rounded-[24px] bg-white p-2.5 sm:rounded-[28px] sm:p-4">
+              <div className="flex items-center justify-between gap-2 border-b border-[#e6ebdd] pb-2.5 sm:gap-4 sm:pb-4">
                 <div>
-                  <p className="text-sm font-black text-[#7b817a]">PrymAgent Solo dashboard</p>
-                  <h3 className="mt-1 text-2xl font-black">Overview</h3>
+                  <p className="text-[9px] font-black text-[#7b817a] sm:text-sm">PrymAgent Solo dashboard</p>
+                  <h3 className="mt-0.5 text-base font-black sm:mt-1 sm:text-2xl">Overview</h3>
                 </div>
-                <div className="flex rounded-full bg-[#f0f3eb] p-1 text-xs font-black">
+                <div className="flex rounded-full bg-[#f0f3eb] p-0.5 text-[8px] font-black sm:p-1 sm:text-xs">
                   {["Documents", "Clients", "Billing"].map((item, index) => (
-                    <span key={item} className={`rounded-full px-3 py-2 ${index === 0 ? "bg-[#101820] text-white" : "text-[#5f636d]"}`}>
+                    <span key={item} className={`rounded-full px-1.5 py-1 sm:px-3 sm:py-2 ${index === 0 ? "bg-[#101820] text-white" : "text-[#5f636d]"}`}>
                       {item}
                     </span>
                   ))}
                 </div>
               </div>
 
-              <div className="mt-4 grid grid-cols-2 gap-3">
+              <div className="mt-2.5 grid grid-cols-2 gap-2 sm:mt-4 sm:gap-3">
                 {dashboardStats.map(([label, value, helper]) => (
-                  <div key={label} className="rounded-[22px] bg-[#f0f3eb] p-4">
-                    <p className="text-xs font-black uppercase tracking-[0.18em] text-[#7b817a]">{label}</p>
-                    <p className="mt-3 text-3xl font-black leading-none">{value}</p>
-                    <p className="mt-2 text-xs font-bold text-[#697069]">{helper}</p>
+                  <div key={label} className="rounded-[16px] bg-[#f0f3eb] p-2.5 sm:rounded-[22px] sm:p-4">
+                    <p className="text-[7px] font-black uppercase tracking-[0.12em] text-[#7b817a] sm:text-xs sm:tracking-[0.18em]">{label}</p>
+                    <p className="mt-1.5 text-lg font-black leading-none sm:mt-3 sm:text-3xl">{value}</p>
+                    <p className="mt-1 text-[8px] font-bold leading-tight text-[#697069] sm:mt-2 sm:text-xs">{helper}</p>
                   </div>
                 ))}
               </div>
 
-              <div className="mt-4 grid grid-cols-[1.1fr_0.9fr] gap-3">
-                <div className="rounded-[24px] bg-[#101820] p-4 text-white">
-                  <div className="mb-4 flex items-center justify-between">
-                    <p className="text-sm font-black">Recent documents</p>
-                    <LayoutDashboard className="h-5 w-5 text-[#b0d226]" />
+              <div className="mt-2.5 grid grid-cols-[1.1fr_0.9fr] gap-2 sm:mt-4 sm:gap-3">
+                <div className="rounded-[18px] bg-[#101820] p-2.5 text-white sm:rounded-[24px] sm:p-4">
+                  <div className="mb-2 flex items-center justify-between sm:mb-4">
+                    <p className="text-[10px] font-black sm:text-sm">Recent documents</p>
+                    <LayoutDashboard className="h-4 w-4 text-[#b0d226] sm:h-5 sm:w-5" />
                   </div>
                   {[
                     ["Invoice", "INV-208", "Ada Ventures", "Paid"],
                     ["Receipt", "RC-086", "Logo design", "Generated"],
                     ["Quote", "Q-104", "Website redesign", "Sent"],
                   ].map(([type, number, client, status]) => (
-                    <div key={number} className="mb-2 grid grid-cols-[auto_1fr_auto] gap-3 rounded-[16px] bg-white/10 px-3 py-3 text-xs font-bold last:mb-0">
-                      <span className="rounded-full bg-[#b0d226] px-2 py-1 text-[#101820]">{type}</span>
+                    <div key={number} className="mb-1.5 grid grid-cols-[auto_1fr_auto] gap-1.5 rounded-[12px] bg-white/10 px-2 py-2 text-[8px] font-bold last:mb-0 sm:mb-2 sm:gap-3 sm:rounded-[16px] sm:px-3 sm:py-3 sm:text-xs">
+                      <span className="rounded-full bg-[#b0d226] px-1.5 py-0.5 text-[#101820] sm:px-2 sm:py-1">{type}</span>
                       <span className="min-w-0 truncate">{number} • {client}</span>
                       <span className="text-white/60">{status}</span>
                     </div>
                   ))}
                 </div>
 
-                <div className="rounded-[24px] bg-[#f6eef5] p-4">
-                  <p className="text-sm font-black">Client snapshot</p>
-                  <div className="mt-4 rounded-[18px] bg-white p-4">
-                    <p className="text-lg font-black">Ada Ventures</p>
-                    <div className="mt-4 space-y-2 text-sm font-bold text-[#5f636d]">
+                <div className="rounded-[18px] bg-[#f6eef5] p-2.5 sm:rounded-[24px] sm:p-4">
+                  <p className="text-[10px] font-black sm:text-sm">Client snapshot</p>
+                  <div className="mt-2 rounded-[14px] bg-white p-2.5 sm:mt-4 sm:rounded-[18px] sm:p-4">
+                    <p className="text-sm font-black sm:text-lg">Ada Ventures</p>
+                    <div className="mt-2 space-y-1 text-[8px] font-bold text-[#5f636d] sm:mt-4 sm:space-y-2 sm:text-sm">
                       <p>Total invoiced: NGN250,000</p>
                       <p>Total paid: NGN100,000</p>
                       <p>Outstanding: NGN150,000</p>
                     </div>
                   </div>
-                  <p className="mt-4 text-xs font-bold leading-5 text-[#5f636d]">
+                  <p className="mt-2 text-[8px] font-bold leading-3 text-[#5f636d] sm:mt-4 sm:text-xs sm:leading-5">
                     Quick visibility without replacing the WhatsApp-first creation flow.
                   </p>
                 </div>
